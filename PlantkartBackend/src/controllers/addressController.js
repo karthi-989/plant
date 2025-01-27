@@ -34,7 +34,7 @@ exports.addAddress = async (req, res) => {
       .json({ message: "Error saving address.", error: error.message });
   }
 };
-
+// this is for git changes
 exports.getAllAddresses = async (req, res) => {
   try {
     // Assuming `req.user.id` contains the authenticated user's ID
