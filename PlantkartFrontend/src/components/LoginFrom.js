@@ -57,28 +57,24 @@ export default function SignIn() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-r from-blue-50 via-indigo-100 to-purple-250 flex items-center justify-center">
+    <div className="relative min-h-screen bg-[url('https://images.unsplash.com/photo-1466781783364-36c955e42a7f?q=80&w=2942&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center flex items-center justify-center px-4">
       <div className="flex w-full max-w-7xl gap-x-10">
         {/* Left Image Section */}
         <div className="hidden lg:block w-1/2">
-          <img
-            src="https://frontends.udemycdn.com/components/auth/desktop-illustration-step-2-x2.webp"
-            alt="Sign In Illustration"
-            className="w-full h-full object-cover"
-          />
+
         </div>
 
         {/* Sign-In Form Section */}
         <div className="flex flex-col justify-center w-full lg:w-1/2 px-6 py-12 lg:px-16">
           <div className="sm:mx-auto sm:w-full sm:max-w-md mb-8 text-center">
-            <h1 className="text-3xl font-bold text-indigo-600">
+            {/* <h1 className="text-3xl font-bold text-indigo-600">
               Knowledge Sharing Platform
             </h1>
             <p className="mt-4 text-gray-600">
               Connect, collaborate, and share knowledge with peers and experts.
               Join our platform to access valuable insights, contribute to
               discussions, and grow your professional network.
-            </p>
+            </p> */}
           </div>
 
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">

@@ -83,15 +83,11 @@ export default function Signup() {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-r from-blue-50 via-indigo-100 to-purple-250 flex items-center justify-center px-4">
+    <div className="relative min-h-screen bg-[url('https://images.unsplash.com/photo-1466781783364-36c955e42a7f?q=80&w=2942&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center flex items-center justify-center px-4">
       <div className="flex flex-col lg:flex-row w-full max-w-7xl gap-x-10">
         {/* Left Section (Image) */}
         <div className="hidden lg:block w-1/2">
-          <img
-            src="https://frontends.udemycdn.com/components/auth/desktop-illustration-step-2-x2.webp"
-            alt="Signup"
-            className="w-full h-full object-cover"
-          />
+
         </div>
 
         {/* Right Section (Form) */}
@@ -178,7 +174,6 @@ export default function Signup() {
                 type="password"
                 value={confirmPassword}
                 onChange={handleconfirmPasswordChange}
-               
                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600"
               />
             </div>
@@ -195,7 +190,7 @@ export default function Signup() {
               Already have an account?{" "}
               <button
                 onClick={() => navigate("/login")}
-                className="font-semibold text-green-600 hover:text-indigo-500"
+                className="font-semibold text-green-600 hover:text-green-500"
               >
                 Sign In
               </button>
