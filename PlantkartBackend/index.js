@@ -5,7 +5,7 @@ const dbConnect = require("./src/config/dbConnect");
 const authRoutes = require("./src/routes/authRoutes");
 const userRoutes = require("./src/routes/userRoutes");
 const addressRoutes=require("./src/routes/addressRoutes")
-
+const cartRoutes=require("./src/routes/cartRoutes")
 
 
 
@@ -21,6 +21,7 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/address",addressRoutes)
+app.use("/api/cart",cartRoutes)
 
 
 // Start The Server

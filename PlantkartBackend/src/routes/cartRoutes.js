@@ -1,11 +1,16 @@
 const express = require("express");
-const { addToCart } = require("../controllers/cartController");
+const { addToCart,getCart,removeFromCart,increaseQuantity,decreaseQuantity } = require("../controllers/cartController")
 const verifyToken = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
 // Add to cart route (requires authentication)
 
-router.post("/cart", verifyToken, addToCart);
+router.post("/add", verifyToken, addToCart);
+router.get("/get",verifyToken, getCart)
+router.delete("/remove/:productId", verifyToken, removeFromCart);
+router.put("/increase", verifyToken, increaseQuantity);
+router.put("/decrease", verifyToken, decreaseQuantity);
+
 
 module.exports = router;

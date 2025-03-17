@@ -21,40 +21,45 @@ export default function SignIn() {
 
   // Handle password change
   const handlePasswordChange = (e) => setPassword(e.target.value);
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const payload =
+    loginType === "email" ? { username, password } : { phoneNumber, password };
 
-    // Payload will be based on login type (email or phone number)
-    const payload =
-      loginType === "email"
-        ? { username, password }
-        : { phoneNumber, password };
+  try {
+    const response = await fetch("http://localhost:7001/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
-    try {
-      const response = await fetch("http://localhost:7000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+    const data = await response.json();
 
-      const data = await response.json();
+    if (response.ok) {
+      console.log("Login successful:", data);
 
-      if (response.ok) {
-        console.log("Login successful:", data);
-        sessionStorage.clear();
-        sessionStorage.setItem("role", data.role); // Role fetched from DB
-        navigate("/home", { state: { username } }); // Pass username to the dashboard
+      // ✅ Store token in localStorage
+      if (data.token) {
+        localStorage.setItem("token", data.token);
       } else {
-        setErrorMessage(data.message || "Invalid credentials");
+        console.error("Token missing in response!");
       }
-    } catch (error) {
-      setErrorMessage("An error occurred. Please try again.");
-      console.error("Error during login:", error);
+
+      sessionStorage.clear();
+      sessionStorage.setItem("role", data.role); // Role fetched from DB
+      navigate("/home", { state: { username } }); // Pass username to dashboard
+    } else {
+      setErrorMessage(data.message || "Invalid credentials");
     }
-  };
+  } catch (error) {
+    setErrorMessage("An error occurred. Please try again.");
+    console.error("Error during login:", error);
+  }
+};
+
 
   return (
     <div className="relative min-h-screen bg-[url('https://images.unsplash.com/photo-1466781783364-36c955e42a7f?q=80&w=2942&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center flex items-center justify-center px-4">

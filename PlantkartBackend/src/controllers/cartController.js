@@ -1,24 +1,35 @@
 const Cart = require("../models/Cart");
+const mongoose = require("mongoose");
 const Product = require("../models/Product");
 
+// Utility Function: Find or create a cart
+const findOrCreateCart = async (userId) => {
+  let cart = await Cart.findOne({ user: userId });
+  if (!cart) {
+    cart = new Cart({ user: userId, products: [] });
+    await cart.save();
+  }
+  return cart;
+};
+
+// Add Product to Cart
 exports.addToCart = async (req, res) => {
   try {
-    const userId = req.user.id; // Get the user ID from the authenticated user
-    const { productId, quantity } = req.body;
+    const userId = req.user.id;
+    const { productId, quantity = 1 } = req.body;
+
+    if (!productId) {
+      return res.status(400).json({ message: "Product ID is required." });
+    }
 
     // Validate the product exists
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId.trim());
     if (!product) {
       return res.status(404).json({ message: "Product not found." });
     }
 
-    // Check if the cart already exists for the user
-    let cart = await Cart.findOne({ userId });
-
-    if (!cart) {
-      // If no cart exists, create a new one
-      cart = new Cart({ userId, products: [] });
-    }
+    // Find or create a cart for the user
+    const cart = await findOrCreateCart(userId);
 
     // Check if the product is already in the cart
     const existingProduct = cart.products.find(
@@ -26,20 +37,154 @@ exports.addToCart = async (req, res) => {
     );
 
     if (existingProduct) {
-      // Update the quantity of the existing product
-      existingProduct.quantity += quantity || 1;
+      existingProduct.quantity += quantity; // Update quantity
     } else {
-      // Add the new product to the cart
-      cart.products.push({ productId, quantity: quantity || 1 });
+      cart.products.push({ productId, quantity }); // Add new product
     }
 
-    // Save the updated cart
     await cart.save();
 
     res.status(200).json({ message: "Product added to cart.", cart });
   } catch (error) {
+    console.error("Error adding product to cart:", error);
     res
       .status(500)
-      .json({ message: "Error adding product to cart.", error: error.message });
+      .json({ message: "Internal server error.", error: error.message });
+  }
+};
+
+// Get Cart Items
+exports.getCart = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Find the cart and populate product details
+    const cart = await Cart.findOne({ user: userId }).populate(
+      "products.productId"
+    );
+
+    if (!cart || cart.products.length === 0) {
+      return res.status(200).json({ message: "Your cart is empty.", cart: [] });
+    }
+
+    res.status(200).json({ cart: cart.products });
+  } catch (error) {
+    console.error("Error fetching cart items:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error.", error: error.message });
+  }
+};
+
+// Remove Product from Cart
+exports.removeFromCart = async (req, res) => {
+  try {
+    const userId = req.user.id; // User authenticated via token
+    const { productId } = req.params; // Extract productId from route params
+
+    if (!productId) {
+      return res.status(400).json({ message: "Product ID is required." });
+    }
+
+    // Find the cart for the user
+    const cart = await Cart.findOne({ user: userId });
+
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found." });
+    }
+
+    console.log("Cart before removal:", cart.products);
+
+    // Remove the product from the cart
+    cart.products = cart.products.filter(
+      (item) => item.productId.toString() !== productId
+    );
+
+    console.log("Cart after removal:", cart.products);
+
+    // Save the updated cart
+    await cart.save();
+
+    res.status(200).json({ message: "Product removed from cart.", cart });
+  } catch (error) {
+    console.error("Error removing product from cart:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error.", error: error.message });
+  }
+};
+
+
+
+
+
+
+// Increase Product Quantity
+exports.increaseQuantity = async (req, res) => {
+  try {
+    const { productId } = req.body;
+    const userId = req.user.id;
+
+    if (!productId) {
+      return res.status(400).json({ message: "Product ID is required." });
+    }
+
+    // Update product quantity in the cart
+    const updatedCart = await Cart.findOneAndUpdate(
+      { user: userId, "products.productId": productId },
+      { $inc: { "products.$.quantity": 1 } },
+      { new: true }
+    ).populate("products.productId");
+
+    if (!updatedCart) {
+      return res.status(404).json({ message: "Cart item not found." });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Quantity updated.", cart: updatedCart.products });
+  } catch (error) {
+    console.error("Error increasing product quantity:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error.", error: error.message });
+  }
+};
+
+// Decrease Product Quantity
+exports.decreaseQuantity = async (req, res) => {
+  try {
+    const { productId } = req.body;
+    const userId = req.user.id;
+
+    if (!productId) {
+      return res.status(400).json({ message: "Product ID is required." });
+    }
+
+    // Decrease product quantity in the cart
+    const updatedCart = await Cart.findOneAndUpdate(
+      { user: userId, "products.productId": productId },
+      { $inc: { "products.$.quantity": -1 } },
+      { new: true }
+    ).populate("products.productId");
+
+    if (!updatedCart) {
+      return res.status(404).json({ message: "Cart item not found." });
+    }
+
+    // Remove the product if quantity becomes 0
+    updatedCart.products = updatedCart.products.filter(
+      (item) => item.quantity > 0
+    );
+    await updatedCart.save();
+
+    res
+      .status(200)
+      .json({ message: "Quantity updated.", cart: updatedCart.products });
+  } catch (error) {
+    console.error("Error decreasing product quantity:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error.", error: error.message });
   }
 };

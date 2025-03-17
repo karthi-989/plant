@@ -1,73 +1,137 @@
-import React from 'react';
-import '../components/Shop.css';
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom"; // Import useLocation
+import Header from "../components/Header"; // Import Header component
+import axios from "axios";
+import Footer from "./Footer";
 
-const products = [
-  { name: 'Jade Terrarium', price: 350, image: 'https://m.media-amazon.com/images/I/61jQElOCBYL.AC_UF1000,1000_QL80.jpg'},
-  { name: 'Ficus Benjamina', price: 350, image: 'https://myplantshop.me/cdn/shop/files/ficus_benjamina_01.jpg?v=1730720407' },
-  { name: 'Syngonium Plant', price: 350, image: 'https://shrigramorganics.com/wp-content/uploads/2020/06/31-08-2019money1.jpg' },
-  { name: 'Chlorophytum Lemon', price: 350, image: 'https://trivandrumnursery.com/img/p/2/5/4/254-large_default.jpg' },
-  { name: 'Aloe Rauhii', price: 350, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3OwC3tKg3msumwDCasMC-vh3WLWEIBQWjjw&s' },
-  { name: 'Areca Palm', price: 350, image: 'https://cdn.shopify.com/s/files/1/0553/5711/2435/files/Areca-Palm-plant_480x480.jpg?v=1722232962' },
-  { name: 'Sansevieria Black', price: 350, image: 'https://i0.wp.com/plantzone.in/wp-content/uploads/2024/05/3-28.jpg' },
-  { name: 'Syngonium Plant', price: 350, image: 'https://theaffordableorganicstore.com/wp-content/uploads/2022/01/Products-20.jpg' },
-  { name: 'Cactus Peruvianus', price: 350, image: 'https://www.cactusoutlet.com/cdn/shop/products/CM-Peruvian-Apple-Product-Main-V1.0_240x.jpg?v=1634200267' },
-  { name: 'Rose', price: 150, image: 'https://nurserylive.com/cdn/shop/products/nurserylive-g-plants-rose-dark-pink-plant-in-grower-round-black-pot-922015_600x600.jpg?v=1679751054' },
-];
+const addToCart = async (productId) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please log in first.");
+      return;
+    }
+
+    console.log("Token being used:", token); // Debugging
+
+    const response = await axios.post(
+      "http://localhost:7001/api/cart/add",
+      { productId, quantity: 1 },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Ensure correct format
+        },
+      }
+    );
+
+  } catch (error) {
+    console.error(
+      "Error adding product to cart:",
+      error.response?.data || error.message
+    );
+    alert("Failed to add product to cart.");
+  }
+};
 
 const Shop = () => {
-  return (
-    <div className="shop-wrapper">
-      <aside className="shop-sidebar">
-        <h3>All Categories</h3>
-        <ul className="category-list">
-          <li>Indoor Plants</li>
-          <li>Outdoor Plants</li>
-          <li>Medicinal Plants</li>
-          <li>Others</li>
-        </ul>
-        <h3>Price</h3>
-        <input type="range" className="price-range" />
-        <h3>Include</h3>
-        <ul className="filter-list">
-          <li>
-            <label>
-              <input type="checkbox" /> Planter
-            </label>
-          </li>
-          <li>
-            <label>
-              <input type="checkbox" /> Combo
-            </label>
-          </li>
-          <li>
-            <label>
-              <input type="checkbox" /> Flowers
-            </label>
-          </li>
-          <li>
-            <label>
-              <input type="checkbox" /> Service
-            </label>
-          </li>
-        </ul>
-      </aside>
+  const location = useLocation(); // Get current URL
+  const queryParams = new URLSearchParams(location.search);
+  const selectedCategory = queryParams.get("category"); // Get category from URL
 
-      <main className="product-grid">
-        {products.map((product, index) => (
-          <div key={index} className="product-card">
-            <div className="product-image-wrapper">
-              <img src={product.image} alt={product.name} className="product-image" />
-            </div>
-            <h4 className="product-name">{product.name}</h4>
-            <p className="product-price">₹ {product.price}</p>
-            <button className="buy-button">Buy</button>
+  const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("http://localhost:7001/api/auth/product");
+      const data = await response.json();
+      setProducts(data);
+
+      if (selectedCategory) {
+        const formattedCategory =
+          selectedCategory.charAt(0).toUpperCase() +
+          selectedCategory.slice(1).toLowerCase();
+
+        setFilteredProducts(
+          data.filter((product) => product.category === formattedCategory)
+        );
+      } else {
+        setFilteredProducts(data); // Show all products if no category is selected
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, [selectedCategory]);
+ // Run effect when category changes
+
+  return (
+    <div className="m-0 font-sans">
+      <Header /> {/* Navbar/Header */}
+      <div className="p-5 text-center pt-20">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 relative inline-block">
+          {selectedCategory
+            ? `${selectedCategory.charAt(0).toUpperCase()}${selectedCategory
+                .slice(1)
+                .toLowerCase()} Collection`
+            : "Shop Our Plants"}
+          <span className="block w-16 h-[3px] bg-gray-800 mx-auto mt-3"></span>
+        </h2>
+
+        {loading ? (
+          <p className="text-center text-gray-600">Loading products...</p>
+        ) : filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
+            {filteredProducts.map((product) => (
+              <div
+                key={product._id}
+                className="bg-white border border-gray-300 rounded-lg shadow-md p-4 flex flex-col h-[300px] w-full sm:h-[250px] sm:w-[180px] md:w-[220px]" // Adjust height and width for mobile
+              >
+                {/* Product Image */}
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="w-full h-[150px] sm:h-[120px] md:h-[140px] object-cover rounded-md mb-4"
+                />
+
+                {/* Product Title */}
+                <h6 className="text-lg font-bold text-center mb-2">
+                  {product.title}
+                </h6>
+
+                {/* Price and Add to Cart Button */}
+                <div className="mt-auto flex justify-between items-center">
+                  <p className="text-gray-600 text-lg font-semibold">
+                    ₹{product.price}
+                  </p>
+                  <button
+                    onClick={() => addToCart(product._id)}
+                    className="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-600"
+                    aria-label={`Add ${product.title} to cart`}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-        <div className="load-more">
-          <button className="load-more-button">Load more</button>
-        </div>
-      </main>
+        ) : (
+          <p className="text-center text-gray-600">
+            No products found in this category.
+          </p>
+        )}
+      </div>
+      <Footer/>
     </div>
+    
   );
 };
 

@@ -59,7 +59,7 @@ export default function Signup() {
     const payload = { username, password, name,confirmPassword,phoneNumber };
 
     try {
-      const response = await fetch("http://localhost:7000/api/auth/register", {
+      const response = await fetch("http://localhost:7001/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

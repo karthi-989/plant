@@ -5,7 +5,6 @@ import HeroSection from "./components/HeroSection";
 import BestSelling from "./components/BestSelling";
 import TrendingPlants from "./components/TrendingPlants";
 import Blogs from "./components/Blogs";
-import HotSale from "./components/HotSale";
 import Planters from "./components/Planters";
 import Shop from "./components/Shop";
 import LandscapeGardening from "./components/LandscapeGardening";
@@ -15,6 +14,7 @@ import Signup from "./components/RegistartionForm";
 import SignIn from "./components/LoginFrom";
 // import ProductDetail from "./components/ProductDetail";
 import CelebsYouLove from "./components/CelebsYouLove";
+import Cart from "./components/cart";
 
 
 function App() {
@@ -26,12 +26,11 @@ function App() {
           path="/home"
           element={
             <>
-            <Header />
+              <Header />
               <HeroSection />
               <BestSelling />
               <TrendingPlants />
               <Blogs />
-              <HotSale />
               <Planters />
               <LandscapeGardening />
               <CelebsYouLove />
@@ -43,14 +42,14 @@ function App() {
 
         {/* Individual Routes for Components */}
         <Route path="/" element={<Signup />} />
+        <Route path="/footer" element={<Footer />} />
         <Route path="/login" element={<SignIn />} />
         <Route path="/plants" element={<TrendingPlants />} />
         <Route path="/Planters" element={<Planters />} />
         <Route path="/blogs" element={<Blogs />} />
-        <Route path="/hot-sale" element={<HotSale />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/CartItem" element={<CartItem />} />
-        <Route path="/CartItem" element={<CartItem />} />
+        <Route path="/Cart" element={<Cart />} />
       </Routes>
     </Router>
   );

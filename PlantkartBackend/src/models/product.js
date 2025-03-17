@@ -3,19 +3,32 @@ const mongoose = require("mongoose");
 const productSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
+    required: [true, "Product title is required"],
+    trim: true,
+  },
+  image: {
+    type: String,
+    required: [true, "Product image URL is required"],
+    trim: true,
   },
   description: {
     type: String,
-    required: true,
+    required: [true, "Product description is required"],
   },
   price: {
     type: Number,
-    required: true,
+    required: [true, "Product price is required"],
+    min: [0, "Price cannot be negative"],
   },
   category: {
     type: String,
-    required: true,
+    required: [true, "Product category is required"],
+    enum: ["Bonsai", "Indoor", "Outdoor", "Flowering", "Succulents"], // Add categories here
+  },
+  stock: {
+    type: Number,
+    default: 1,
+    min: [0, "Stock cannot be negative"],
   },
   createdAt: {
     type: Date,
@@ -23,4 +36,8 @@ const productSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Product", productSchema);
+// Prevent model overwrite error
+const Product =
+  mongoose.models.Product || mongoose.model("Product", productSchema);
+
+module.exports = Product;

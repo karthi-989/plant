@@ -17,7 +17,7 @@ const register = async (req, res) => {
     }
 
     // Check if it's an admin user (using predefined username and phone number)
-    if (username === "admin@gmail.com" && phoneNumber === "+1234567890") {
+    if (username === "karthikmutyala999@gmail.com" && phoneNumber === "9553955273") {
       // Admin user has predefined username and phone number
       const existingAdmin = await User.findOne({
         $or: [{ username }, { phoneNumber }],
