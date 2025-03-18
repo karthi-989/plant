@@ -7,7 +7,14 @@ const {
   editProduct,
   deleteProduct
 } = require("../controllers/productController");
+const {
+  createOrder,
+  verifyPayment,
+  getAllOrders
+} = require("../controllers/paymentController");
+
 const verifyToken=require("../middlewares/authMiddleware")
+
 
 
 const router = express.Router();
@@ -21,6 +28,9 @@ router.delete("/product/:id", verifyToken, deleteProduct);
 router.get("/product", getProducts);
 router.get("/product/category/:category", getProductsByCategory);
 
+router.post("/create-order", verifyToken, createOrder);
+router.post("/verify-payment", verifyToken, verifyPayment);
+router.get("/admin/orders", verifyToken, getAllOrders);
 module.exports = router;
 
 

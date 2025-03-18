@@ -23,7 +23,7 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     required: [true, "Product category is required"],
-    enum: ["Bonsai", "Indoor", "Outdoor", "Flowering", "Succulents"], // Add categories here
+    enum: ["Bonsai", "Indoor Plants", "Outdoor Plants", "Flowering", "Succulents","Planter"], // Add categories here
   },
   stock: {
     type: Number,

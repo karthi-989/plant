@@ -51,17 +51,18 @@ useEffect(() => {
       const data = await response.json();
       setProducts(data);
 
-      if (selectedCategory) {
-        const formattedCategory =
-          selectedCategory.charAt(0).toUpperCase() +
-          selectedCategory.slice(1).toLowerCase();
+if (selectedCategory) {
+  const formattedCategory = selectedCategory.toLowerCase(); // Convert to lowercase
 
-        setFilteredProducts(
-          data.filter((product) => product.category === formattedCategory)
-        );
-      } else {
-        setFilteredProducts(data); // Show all products if no category is selected
-      }
+  setFilteredProducts(
+    data.filter(
+      (product) => product.category.toLowerCase() === formattedCategory // Convert product category to lowercase
+    )
+  );
+} else {
+  setFilteredProducts(data); // Show all products if no category is selected
+}
+
     } catch (error) {
       console.error("Error fetching products:", error);
     } finally {
@@ -129,7 +130,6 @@ useEffect(() => {
           </p>
         )}
       </div>
-      <Footer/>
     </div>
     
   );

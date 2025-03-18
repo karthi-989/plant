@@ -12,22 +12,22 @@ const Header = () => {
   useEffect(() => {
     fetchCartItems();
   }, []);
-const fetchCartItems = async () => {
-  try {
-    const response = await axios.get("http://localhost:7001/api/cart/get", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+  const fetchCartItems = async () => {
+    try {
+      const response = await axios.get("http://localhost:7001/api/cart/get", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-    // Ensure response is an array before setting state
-    const products = response.data?.cart?.products;
-    setCartItems(Array.isArray(products) ? products : []);
-  } catch (error) {
-    console.error("Error fetching cart items:", error);
-    setCartItems([]); // Reset to an empty array on error
-  }
-};
+      // Ensure response is an array before setting state
+      const products = response.data?.cart?.products;
+      setCartItems(Array.isArray(products) ? products : []);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+      setCartItems([]); // Reset to an empty array on error
+    }
+  };
 
   const handleCartClick = () => {
     navigate("/cart");
@@ -71,16 +71,18 @@ const fetchCartItems = async () => {
               <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-md p-4">
                 <h3 className="font-semibold text-lg mb-2">Cart Items</h3>
                 {Array.isArray(cartItems) && cartItems.length > 0 ? (
-  cartItems.map((item) => (
-    <div key={item.productId._id} className="flex justify-between">
-      <span>{item.productId.title}</span>
-      <span>Qty: {item.quantity}</span>
-    </div>
-  ))
-) : (
-  <p className="text-gray-500">Your cart is empty.</p>
-)}
-
+                  cartItems.map((item) => (
+                    <div
+                      key={item.productId._id}
+                      className="flex justify-between"
+                    >
+                      <span>{item.productId.title}</span>
+                      <span>Qty: {item.quantity}</span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500">Your cart is empty.</p>
+                )}
               </div>
             )}
           </div>

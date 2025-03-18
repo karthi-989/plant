@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "./Header";
+import { useNavigate } from "react-router-dom";
+
+
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const navigate = useNavigate();
   // Fetch cart items from the backend
   useEffect(() => {
    const fetchCartItems = async () => {
@@ -155,9 +159,7 @@ return (
             >
               {/* Product Image */}
               <img
-                src={
-                  item.productId?.image || "https://via.placeholder.com/80"
-                }
+                src={item.productId?.image || "https://via.placeholder.com/80"}
                 alt={item.productId?.title || "Product Image"}
                 className="w-20 h-20 object-cover rounded"
               />
@@ -208,7 +210,10 @@ return (
           <h3 className="text-lg font-semibold">
             Total: ₹{totalPrice.toFixed(2)}
           </h3>
-          <button className="bg-green-500 text-white px-5 py-2 rounded-lg mt-4">
+          <button
+            className="bg-green-500 text-white px-5 py-2 rounded-lg mt-4"
+            onClick={() => navigate("/checkout")}
+          >
             Proceed to Checkout
           </button>
         </div>

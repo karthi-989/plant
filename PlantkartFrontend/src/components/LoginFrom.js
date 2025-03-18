@@ -41,16 +41,19 @@ const handleSubmit = async (e) => {
     if (response.ok) {
       console.log("Login successful:", data);
 
-      // ✅ Store token in localStorage
       if (data.token) {
         localStorage.setItem("token", data.token);
+        sessionStorage.setItem("role", data.role);
       } else {
         console.error("Token missing in response!");
       }
 
-      sessionStorage.clear();
-      sessionStorage.setItem("role", data.role); // Role fetched from DB
-      navigate("/home", { state: { username } }); // Pass username to dashboard
+      // ✅ Redirect based on user role
+      if (data.role === "admin") {
+        navigate("/admin"); // Redirect to admin dashboard
+      } else {
+        navigate("/home", { state: { username } });
+      }
     } else {
       setErrorMessage(data.message || "Invalid credentials");
     }
@@ -59,6 +62,7 @@ const handleSubmit = async (e) => {
     console.error("Error during login:", error);
   }
 };
+
 
 
   return (

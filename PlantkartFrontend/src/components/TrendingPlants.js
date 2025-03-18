@@ -1,36 +1,112 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "./TrendingPlants.css";
+import axios from "axios";
+
+const addToCart = async (productId) => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      alert("Please log in first.");
+      return;
+    }
+
+    await axios.post(
+      "http://localhost:7001/api/cart/add",
+      { productId, quantity: 1 },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    alert("Product added to cart!");
+  } catch (error) {
+    console.error(
+      "Error adding product to cart:",
+      error.response?.data || error.message
+    );
+    alert("Failed to add product to cart.");
+  }
+};
 
 const TrendingPlants = () => {
-  const products = [
-    { name: 'Jade Terrarium', price: 350, image: 'https://m.media-amazon.com/images/I/61jQElOCBYL.AC_UF1000,1000_QL80.jpg'},
-    { name: 'Ficus Benjamina', price: 350, image: 'https://myplantshop.me/cdn/shop/files/ficus_benjamina_01.jpg?v=1730720407' },
-    { name: 'Syngonium Plant', price: 350, image: 'https://shrigramorganics.com/wp-content/uploads/2020/06/31-08-2019money1.jpg' },
-    { name: 'Chlorophytum Lemon', price: 350, image: 'https://trivandrumnursery.com/img/p/2/5/4/254-large_default.jpg' },
-    { name: 'Aloe Rauhii', price: 350, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3OwC3tKg3msumwDCasMC-vh3WLWEIBQWjjw&s' },
-    { name: 'Areca Palm', price: 350, image: 'https://cdn.shopify.com/s/files/1/0553/5711/2435/files/Areca-Palm-plant_480x480.jpg?v=1722232962' },
-    { name: 'Sansevieria Black', price: 350, image: 'https://i0.wp.com/plantzone.in/wp-content/uploads/2024/05/3-28.jpg' },
-    { name: 'Syngonium Plant', price: 350, image: 'https://theaffordableorganicstore.com/wp-content/uploads/2022/01/Products-20.jpg' },
-  ];
+  const [plants, setPlants] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPlants = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:7001/api/auth/product"
+        );
+        const allPlants = response.data;
+        if (Array.isArray(allPlants) && allPlants.length > 0) {
+          const randomPlants = allPlants
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 8);
+          setPlants(randomPlants);
+        }
+      } catch (error) {
+        console.error("Error fetching plants:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlants();
+  }, []);
 
   return (
-    <div className="featured-section">
-      <h2 className="featured-title">Trending Plants</h2>
-      <div className="featured-grid">
-        {products.map((product, index) => (
-          <div className="featured-card" key={index}>
-            <img src={product.image} alt={product.name} className="featured-image" />
-            <div className="featured-info">
-              <h3 className="featured-name">{product.name}</h3>
-              <p className="featured-price">₹{product.price}</p>
-              <Link to="/CartItem">
-        <button className="featured-button">Buy</button>
-      </Link>
+    <div className="p-6 text-center">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">Trending Plants</h2>
+
+      {loading ? (
+        <p className="text-center text-gray-600">Loading plants...</p>
+      ) : plants.length > 0 ? (
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {plants.map((plant) => (
+            <div
+              key={plant._id}
+              className="bg-white border border-gray-300 rounded-lg shadow-md p-4 flex flex-col h-[320px] sm:h-[280px] md:h-[300px] w-full"
+            >
+              {/* Product Image */}
+              <Link to={`/product/${plant._id}`}>
+                <img
+                  src={plant.image}
+                  alt={plant.name}
+                  className="w-full h-[160px] sm:h-[140px] md:h-[160px] object-cover rounded-md mb-4 cursor-pointer hover:scale-105 transition-transform duration-300"
+                />
+              </Link>
+
+              {/* Product Title */}
+              <h6 className="text-lg font-semibold text-center text-gray-800">
+                {plant.name}
+              </h6>
+
+              {/* Price and Add to Cart Button */}
+              <div className="mt-auto flex justify-between items-center">
+                <p className="text-gray-600 text-lg font-medium">
+                  ₹{plant.price}
+                </p>
+                <button
+                  onClick={() => addToCart(plant._id)}
+                  className="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-600 transition-all duration-300"
+                  aria-label={`Add ${plant.name} to cart`}
+                >
+                  +
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <p className="text-center text-gray-600">
+          No trending plants available.
+        </p>
+      )}
     </div>
   );
 };

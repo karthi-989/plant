@@ -64,10 +64,17 @@ exports.getCart = async (req, res) => {
     );
 
     if (!cart || cart.products.length === 0) {
-      return res.status(200).json({ message: "Your cart is empty.", cart: [] });
+      return res
+        .status(200)
+        .json({ message: "Your cart is empty.", cart: [], totalPrice: 0 });
     }
 
-    res.status(200).json({ cart: cart.products });
+    // Calculate total price
+    const totalPrice = cart.products.reduce((acc, item) => {
+      return acc + item.productId.price * item.quantity;
+    }, 0);
+
+    res.status(200).json({ cart: cart.products, totalPrice });
   } catch (error) {
     console.error("Error fetching cart items:", error);
     res
