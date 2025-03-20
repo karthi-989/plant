@@ -1,6 +1,6 @@
-const Cart = require("../models/Cart");
+const Cart = require("../models/cart");
 const mongoose = require("mongoose");
-const Product = require("../models/Product");
+const Product = require("../models/product");
 
 // Utility Function: Find or create a cart
 const findOrCreateCart = async (userId) => {
