@@ -92,7 +92,7 @@ const Checkout = () => {
 
       // Step 2: Open Razorpay modal
       const options = {
-        key: "rzp_test_nWHpYvNRWKiQmH", // Razorpay API key (Ensure it's stored securely)
+        key: "rzp_test_PGrSvKSsu8PlqK", // Razorpay API key (Ensure it's stored securely)
         amount: totalPrice * 100, // Amount in paisa (Razorpay expects amount in the smallest currency unit)
         currency: "INR",
         name: "Plant Store",
