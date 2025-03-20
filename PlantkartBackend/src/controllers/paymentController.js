@@ -111,27 +111,28 @@ exports.verifyPayment = async (req, res) => {
 };
 exports.getAllOrders = async (req, res) => {
   try {
-    // Ensure only admins can access this route (using middleware is better)
-    if (req.user.role !== "admin") {
-      return res.status(403).json({ error: "Access denied" });
+    // Verify admin access
+    if (!req.user || req.user.role !== "admin") {
+      return res.status(403).json({ error: "Access denied. Admins only." });
     }
 
-    // Extract optional query parameters for filtering and pagination
+    // Extract query parameters for filtering and pagination
     const { status, page = 1, limit = 10 } = req.query;
-    const filter = status ? { status } : {}; // Filter by status if provided
+    const filter = status ? { status } : {}; // Apply status filter if provided
 
     // Fetch orders with user and product details, sorted by newest first
     const orders = await Order.find(filter)
-      .populate("userId", "username email") // Fetch user details
-      .populate("products.productId", "title price") // Fetch product details
-      .sort({ createdAt: -1 }) // Sort by newest first
-      .skip((page - 1) * limit) // Pagination
-      .limit(Number(limit));
+      .populate("userId", "username email") // Populate user details
+      .populate("products.productId", "title price") // Populate product details
+      .sort({ createdAt: -1 }) // Sort by creation date
+      .skip((page - 1) * Number(limit)) // Pagination: skip records
+      .limit(Number(limit)); // Pagination: limit number of records
 
-    // Get total count (for pagination)
+    // Get total order count (for pagination)
     const totalOrders = await Order.countDocuments(filter);
 
-    res.json({
+    // Send the response with pagination metadata
+    res.status(200).json({
       success: true,
       orders,
       totalOrders,
@@ -139,8 +140,17 @@ exports.getAllOrders = async (req, res) => {
       currentPage: Number(page),
     });
   } catch (error) {
-    console.error("Error fetching orders:", error);
-    res.status(500).json({ error: "Failed to fetch orders" });
+    // Enhanced error handling
+    console.error("Error fetching orders:", {
+      message: error.message,
+      stack: error.stack,
+    });
+    res.status(500).json({
+      error: "An error occurred while fetching orders. Please try again later.",
+    });
   }
 };
+
+
+
 
