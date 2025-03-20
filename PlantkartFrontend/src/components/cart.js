@@ -12,37 +12,37 @@ const Cart = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchCartItems = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          setError("Please log in to view your cart.");
-          setLoading(false);
-          return;
-        }
-
-        const response = await axios.get(`${API_URL}/api/cart/get`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        console.log("Cart API Response:", response.data);
-
-        const products =
-          response.data?.cart?.products || response.data?.cart || [];
-
-        if (Array.isArray(products)) {
-          setCartItems(products);
-        } else {
-          setCartItems([]);
-        }
-      } catch (err) {
-        console.error("Error fetching cart:", err);
-        setError("Failed to load cart. Please try again later.");
-      } finally {
+  const fetchCartItems = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("Please log in to view your cart.");
         setLoading(false);
+        return;
       }
-    };
+
+      const response = await axios.get(`${API_URL}/api/cart/get`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("Cart API Response:", response.data);
+
+      const products =
+        response.data?.cart?.products || response.data?.cart || [];
+
+      if (Array.isArray(products)) {
+        setCartItems(products);
+      } else {
+        setCartItems([]);
+      }
+    } catch (err) {
+      console.error("Error fetching cart:", err);
+      setError("Failed to load cart. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
 
     fetchCartItems();
   }, []);
