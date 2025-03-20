@@ -13,6 +13,13 @@ dbConnect();
 const app = express();
 
 //middileware
+app.use(
+  cors({
+    origin: "https://plant-kart-frontend.onrender.com", // Replace with your actual deployed frontend URL
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(cors());
