@@ -4,6 +4,10 @@ import Header from "../components/Header"; // Import Header component
 import axios from "axios";
 import Footer from "./Footer";
 
+
+const API_URL = process.env.REACT_APP_API_URL;
+
+console.log("Backend API URL:", API_URL);
 const addToCart = async (productId) => {
   try {
     const token = localStorage.getItem("token");
@@ -16,7 +20,7 @@ const addToCart = async (productId) => {
     console.log("Token being used:", token); // Debugging
 
     const response = await axios.post(
-      "http://localhost:7001/api/cart/add",
+      `${API_URL}/api/cart/add`,
       { productId, quantity: 1 },
       {
         headers: {
@@ -47,7 +51,7 @@ const Shop = () => {
 useEffect(() => {
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:7001/api/auth/product");
+      const response = await fetch(`${API_URL}/api/auth/product`);
       const data = await response.json();
       setProducts(data);
 

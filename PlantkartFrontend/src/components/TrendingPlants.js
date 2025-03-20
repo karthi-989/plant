@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
 const addToCart = async (productId) => {
   try {
     const token = localStorage.getItem("token");
@@ -12,7 +13,7 @@ const addToCart = async (productId) => {
     }
 
     await axios.post(
-      "http://localhost:7001/api/cart/add",
+      `${API_URL}/api/cart/add`,
       { productId, quantity: 1 },
       {
         headers: {
@@ -40,7 +41,7 @@ const TrendingPlants = () => {
     const fetchPlants = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:7001/api/auth/product"
+          `${API_URL}/api/auth/product`
         );
         const allPlants = response.data;
         if (Array.isArray(allPlants) && allPlants.length > 0) {
@@ -83,7 +84,7 @@ const TrendingPlants = () => {
 
               {/* Product Title */}
               <h6 className="text-lg font-semibold text-center text-gray-800">
-                {plant.name}
+                {plant.title}
               </h6>
 
               {/* Price and Add to Cart Button */}

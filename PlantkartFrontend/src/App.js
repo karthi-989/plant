@@ -8,7 +8,6 @@ import Blogs from "./components/Blogs";
 import Planters from "./components/Planters";
 import Shop from "./components/Shop";
 import LandscapeGardening from "./components/LandscapeGardening";
-import CartItem from "./components/CartItem";
 import Signup from "./components/RegistartionForm";
 import SignIn from "./components/LoginFrom";
 import CelebsYouLove from "./components/CelebsYouLove";
@@ -73,14 +72,6 @@ function App() {
           element={
             <Layout>
               <Cart />
-            </Layout>
-          }
-        />
-        <Route
-          path="/cartItem"
-          element={
-            <Layout>
-              <CartItem />
             </Layout>
           }
         />

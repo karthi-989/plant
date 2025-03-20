@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = process.env.REACT_APP_API_URL;
 const Checkout = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -24,7 +25,7 @@ const Checkout = () => {
     const fetchCart = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:7001/api/cart/get", {
+        const response = await axios.get(`${API_URL}/api/cart/get`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -78,7 +79,7 @@ const Checkout = () => {
 
       // Step 1: Send order details to the backend to create an order
       const orderResponse = await axios.post(
-        "http://localhost:7001/api/auth/create-order",
+        `${API_URL}/api/auth/create-order`,
         {
           billingAddress: formData,
           cartItems: cart,
@@ -102,7 +103,7 @@ const Checkout = () => {
           // Send payment details to backend
           axios
             .post(
-              "http://localhost:7001/api/auth/verify-payment",
+              `${API_URL}/api/auth/verify-payment`,
               {
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_order_id: response.razorpay_order_id,

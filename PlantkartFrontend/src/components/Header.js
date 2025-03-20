@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, ShoppingCart, User } from "lucide-react";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
 const Header = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -14,7 +15,7 @@ const Header = () => {
   }, []);
   const fetchCartItems = async () => {
     try {
-      const response = await axios.get("http://localhost:7001/api/cart/get", {
+      const response = await axios.get(`${API_URL}/api/cart/get`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const API_URL = process.env.REACT_APP_API_URL;
 export default function SignIn() {
   const [loginType, setLoginType] = useState("email"); // Default is email
   const [username, setUsername] = useState(""); // For email or phone (depending on loginType)
@@ -28,7 +29,7 @@ const handleSubmit = async (e) => {
     loginType === "email" ? { username, password } : { phoneNumber, password };
 
   try {
-    const response = await fetch("http://localhost:7001/api/auth/login", {
+    const response = await fetch(`${API_URL}/api/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
