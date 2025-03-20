@@ -32,30 +32,27 @@ const AdminDashboard = () => {
     }
   };
 
-
-const fetchOrders = async () => {
-  try {
-    const token = localStorage.getItem("token"); // Check if the token exists
-    if (!token) {
-      console.error("Token not found. Please log in again.");
-      return;
-    }
-
-    const response = await axios.get(
-      "http://localhost:7001/api/auth/admin/orders",
-      {
-        headers: { Authorization: `Bearer ${token}` }, // Use the token
+  const fetchOrders = async () => {
+    try {
+      const token = localStorage.getItem("token"); // Check if the token exists
+      if (!token) {
+        console.error("Token not found. Please log in again.");
+        return;
       }
-    );
 
-    console.log("Orders:", response.data);
-    setOrders(response.data.orders);
-  } catch (error) {
-    console.error("Error fetching orders:", error.message);
-  }
-};
+      const response = await axios.get(
+        "http://localhost:7001/api/auth/admin/orders",
+        {
+          headers: { Authorization: `Bearer ${token}` }, // Use the token
+        }
+      );
 
-
+      console.log("Orders:", response.data);
+      setOrders(response.data.orders);
+    } catch (error) {
+      console.error("Error fetching orders:", error.message);
+    }
+  };
 
   const addProduct = async (e) => {
     e.preventDefault();
@@ -106,26 +103,26 @@ const fetchOrders = async () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 pt-20">
+    <div className="flex flex-col lg:flex-row h-screen bg-gray-100 pt-20">
       {/* Sidebar */}
-      <div className="w-64 bg-green-700 text-white p-5">
+      <div className="w-full lg:w-64 bg-green-700 text-white p-5 lg:h-screen">
         <h2 className="text-2xl font-bold">Admin Dashboard</h2>
-        <ul className="mt-5">
+        <ul className="mt-5 space-y-2">
           <li
             onClick={() => setActiveTab("products")}
-            className="cursor-pointer py-2 hover:bg-green-600"
+            className="cursor-pointer py-2 hover:bg-green-600 rounded-md"
           >
             All Products
           </li>
           <li
             onClick={() => setActiveTab("addProduct")}
-            className="cursor-pointer py-2 hover:bg-green-600"
+            className="cursor-pointer py-2 hover:bg-green-600 rounded-md"
           >
             Add Product
           </li>
           <li
             onClick={() => setActiveTab("orders")}
-            className="cursor-pointer py-2 hover:bg-green-600"
+            className="cursor-pointer py-2 hover:bg-green-600 rounded-md"
           >
             Orders
           </li>
@@ -133,7 +130,7 @@ const fetchOrders = async () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-5">
+      <div className="flex-1 p-5 overflow-auto">
         {activeTab === "products" && (
           <div>
             <h2 className="text-xl font-bold mb-4">All Products</h2>
@@ -316,6 +313,7 @@ const fetchOrders = async () => {
             </form>
           </div>
         )}
+
         {activeTab === "orders" && (
           <div className="p-6 bg-gray-100 rounded-md shadow-md">
             <h2 className="text-2xl font-bold mb-6 text-center text-gray-700">
