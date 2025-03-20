@@ -12,7 +12,9 @@ const Cart = () => {
 
   const navigate = useNavigate();
 
-  const fetchCartItems = async () => {
+  
+  useEffect(() => {
+    const fetchCartItems = async () => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -42,7 +44,6 @@ const Cart = () => {
       setLoading(false);
     }
   };
-  useEffect(() => {
 
     fetchCartItems();
   }, []);
