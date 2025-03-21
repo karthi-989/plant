@@ -219,6 +219,12 @@ const AdminDashboard = () => {
                 <option value="Indoor Plants">Indoor Plants</option>
                 <option value="Outdoor Plants">Outdoor Plants</option>
                 <option value="Planters">Planters</option>
+                <option value="Air Purifying Plants">
+                  Air Purifying Plants
+                </option>
+                <option value="Flowering Palnts">
+                  Flowering Plants
+                </option>
               </select>
 
               <button
