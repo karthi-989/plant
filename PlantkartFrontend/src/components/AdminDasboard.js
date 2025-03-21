@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL;
 const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -24,7 +25,7 @@ const AdminDashboard = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:7001/api/auth/product"
+        `${API_URL}/api/auth/product`
       );
       setProducts(response.data);
     } catch (error) {
@@ -40,12 +41,9 @@ const AdminDashboard = () => {
         return;
       }
 
-      const response = await axios.get(
-        "http://localhost:7001/api/auth/admin/orders",
-        {
-          headers: { Authorization: `Bearer ${token}` }, // Use the token
-        }
-      );
+      const response = await axios.get(`${API_URL}/api/auth/admin/orders`, {
+        headers: { Authorization: `Bearer ${token}` }, // Use the token
+      });
 
       console.log("Orders:", response.data);
       setOrders(response.data.orders);
@@ -57,7 +55,7 @@ const AdminDashboard = () => {
   const addProduct = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:7001/api/auth/product", newProduct, {
+      await axios.post(`${API_URL}/api/auth/product`, newProduct, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       fetchProducts();
@@ -69,7 +67,7 @@ const AdminDashboard = () => {
 
   const deleteProduct = async (id) => {
     try {
-      await axios.delete(`http://localhost:7001/api/auth/product/${id}`, {
+      await axios.delete(`${API_URL}/api/auth/product/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       fetchProducts();
@@ -87,7 +85,7 @@ const AdminDashboard = () => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://localhost:7001/api/auth/product/${editingProduct._id}`,
+        `${API_URL}/api/auth/product/${editingProduct._id}`,
         editingProduct,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
