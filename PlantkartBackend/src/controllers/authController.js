@@ -120,57 +120,7 @@ const login = async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
-const reg = async(res,req)=>{
-  try{
-    const{name,username,password}=req.body
-    if(!name||!username||!password){
-      return res.status(400).json("allfields are requires")
-    }
-     const hashedPassword= await bcrypt.hash(password, 10);
-     const user = new User({
-      name,
-      username,
-     })
-     await user.save()
-     return res.status(201).json({message: "user created succesfully"})
 
-  }
-  catch(err){
-    console.error("Error during registration:", err);
-    res.status(500).json({message:"something happend",error:errormessage})
-  }
-
-
-};
-const log=async (req,res)=>{
-  try{
-      const{username,passwod}=req.body
-      const user=await User.findOne({username})
-      if(!user){
-        return res.status(400).json({message:"user not found"})
-      }
-      const isMatch=await bcrypt.compare(passwod,user.password)
-      if(!isMatch){
-        return res.status(400).json({message:"invalid password"})
-      }
-      const token=jwt.sign(
-        {user_id:user._id},
-        process.env.SECRET_KEY,
-        {expiresIn:"1h"}
-      )
-      return res.status(200).json({
-         message:"login Succesfull",
-         token,
-         user:user.name
-
-      })
-  }
-  catch(err){
-    console.error("Error during login:", err);
-    res.status(500).json
-  }
-
-}
 
 module.exports = {
   register,

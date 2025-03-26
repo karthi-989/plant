@@ -133,7 +133,7 @@ export default function Signup() {
             </div>
             <div>
               <label
-                htmlFor="password"
+                htmlFor="phonenumber"
                 className="block text-sm font-medium text-gray-900"
               >
                 phoneNumber
