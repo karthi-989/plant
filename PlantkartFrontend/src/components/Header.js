@@ -4,15 +4,18 @@ import { Menu, X, ShoppingCart, User } from "lucide-react";
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_API_URL;
+
 const Header = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     fetchCartItems();
   }, []);
+
   const fetchCartItems = async () => {
     try {
       const response = await axios.get(`${API_URL}/api/cart/get`, {
@@ -21,17 +24,31 @@ const Header = () => {
         },
       });
 
-      // Ensure response is an array before setting state
       const products = response.data?.cart?.products;
       setCartItems(Array.isArray(products) ? products : []);
     } catch (error) {
       console.error("Error fetching cart items:", error);
-      setCartItems([]); // Reset to an empty array on error
+      setCartItems([]);
     }
   };
 
-  const handleCartClick = () => {
-    navigate("/cart");
+  const handleSearch = async (query) => {
+    setSearchQuery(query);
+
+    if (query.trim() === "") {
+      setSearchResults([]);
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${API_URL}/api/auth/products/search?query=${query}`
+      );
+      setSearchResults(response.data);
+    } catch (error) {
+      console.error("Error searching products:", error);
+      setSearchResults([]);
+    }
   };
 
   return (
@@ -57,42 +74,49 @@ const Header = () => {
         </ul>
 
         <div className="flex items-center space-x-4 relative">
-          <input
-            type="text"
-            placeholder="Search"
-            className="hidden md:block px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
-          />
-
+          {/* Search Bar */}
           <div className="relative">
-            <ShoppingCart
-              className="text-gray-600 hover:text-green-600 transition cursor-pointer"
-              onClick={handleCartClick}
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              placeholder="Search products..."
+              className="hidden md:block px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
             />
-            {cartOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-md p-4">
-                <h3 className="font-semibold text-lg mb-2">Cart Items</h3>
-                {Array.isArray(cartItems) && cartItems.length > 0 ? (
-                  cartItems.map((item) => (
-                    <div
-                      key={item.productId._id}
-                      className="flex justify-between"
-                    >
-                      <span>{item.productId.title}</span>
-                      <span>Qty: {item.quantity}</span>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-500">Your cart is empty.</p>
-                )}
+            {/* Search Results Dropdown */}
+            {searchResults.length > 0 && (
+              <div className="absolute bg-white shadow-md rounded-md mt-2 w-full max-w-xs p-2 z-50">
+                {searchResults.map((product) => (
+                  <div
+                    key={product._id}
+                    className="p-2 hover:bg-gray-100 cursor-pointer flex justify-between"
+                    onClick={() => {
+                      navigate(`/product/${product._id}`);
+                      setSearchQuery("");
+                      setSearchResults([]);
+                    }}
+                  >
+                    <span>{product.title}</span>
+                    <span className="text-gray-500">${product.price}</span>
+                  </div>
+                ))}
               </div>
             )}
           </div>
 
+          {/* Cart Icon */}
+          <ShoppingCart
+            className="text-gray-600 hover:text-green-600 transition cursor-pointer"
+            onClick={() => navigate("/cart")}
+          />
+
+          {/* User Icon */}
           <User
             className="text-gray-600 hover:text-green-600 transition cursor-pointer"
             onClick={() => navigate("/login")}
           />
 
+          {/* Mobile Menu Button */}
           <button
             className="md:hidden text-gray-700 focus:outline-none"
             onClick={() => setMenuOpen(!menuOpen)}

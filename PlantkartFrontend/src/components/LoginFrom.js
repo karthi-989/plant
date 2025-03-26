@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_API_URL;
+console.log("API URL from env:", process.env.REACT_APP_API_URL);
+console.log("Final API Request URL:", `${API_URL}/api/auth/login`);
+
 export default function SignIn() {
   const [loginType, setLoginType] = useState("email"); // Default is email
   const [username, setUsername] = useState(""); // For email or phone (depending on loginType)

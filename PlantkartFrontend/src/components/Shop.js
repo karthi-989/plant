@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom"; // Import useLocation
-import Header from "../components/Header"; // Import Header component
+import { useLocation } from "react-router-dom";
+import Header from "../components/Header";
 import axios from "axios";
-import Footer from "./Footer";
-
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 console.log("Backend API URL:", API_URL);
+
 const addToCart = async (productId) => {
   try {
     const token = localStorage.getItem("token");
@@ -17,19 +16,20 @@ const addToCart = async (productId) => {
       return;
     }
 
-    console.log("Token being used:", token); // Debugging
+    console.log("Token being used:", token);
 
-    const response = await axios.post(
+    await axios.post(
       `${API_URL}/api/cart/add`,
       { productId, quantity: 1 },
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Ensure correct format
+          Authorization: `Bearer ${token}`,
         },
       }
     );
 
+    alert("Product added to cart!");
   } catch (error) {
     console.error(
       "Error adding product to cart:",
@@ -40,47 +40,44 @@ const addToCart = async (productId) => {
 };
 
 const Shop = () => {
-  const location = useLocation(); // Get current URL
+  const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const selectedCategory = queryParams.get("category"); // Get category from URL
+  const selectedCategory = queryParams.get("category");
 
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/auth/product`);
-      const data = await response.json();
-      setProducts(data);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/auth/product`);
+        const data = await response.json();
+        setProducts(data);
 
-if (selectedCategory) {
-  const formattedCategory = selectedCategory.toLowerCase(); // Convert to lowercase
+        if (selectedCategory) {
+          const formattedCategory = selectedCategory.toLowerCase();
+          setFilteredProducts(
+            data.filter(
+              (product) => product.category.toLowerCase() === formattedCategory
+            )
+          );
+        } else {
+          setFilteredProducts(data);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  setFilteredProducts(
-    data.filter(
-      (product) => product.category.toLowerCase() === formattedCategory // Convert product category to lowercase
-    )
-  );
-} else {
-  setFilteredProducts(data); // Show all products if no category is selected
-}
-
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchProducts();
-}, [selectedCategory]);
- // Run effect when category changes
+    fetchProducts();
+  }, [selectedCategory]);
 
   return (
     <div className="m-0 font-sans">
-      <Header /> {/* Navbar/Header */}
+      <Header />
       <div className="p-5 text-center pt-20">
         <h2 className="text-2xl font-bold mb-6 text-gray-800 relative inline-block">
           {selectedCategory
@@ -94,26 +91,28 @@ if (selectedCategory) {
         {loading ? (
           <p className="text-center text-gray-600">Loading products...</p>
         ) : filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
             {filteredProducts.map((product) => (
               <div
                 key={product._id}
-                className="bg-white border border-gray-300 rounded-lg shadow-md p-4 flex flex-col h-[300px] w-full sm:h-[250px] sm:w-[180px] md:w-[220px]" // Adjust height and width for mobile
+                className="bg-white border border-gray-300 rounded-lg shadow-md p-4 flex flex-col justify-between h-[320px] w-full sm:w-[200px] md:w-[240px]"
               >
                 {/* Product Image */}
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="w-full h-[150px] sm:h-[120px] md:h-[140px] object-cover rounded-md mb-4"
-                />
+                <div className="h-[150px] flex items-center justify-center">
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    className="w-full h-full object-cover rounded-md"
+                  />
+                </div>
 
                 {/* Product Title */}
-                <h6 className="text-lg font-bold text-center mb-2">
+                <h6 className="text-lg font-bold text-center mt-2">
                   {product.title}
                 </h6>
 
                 {/* Price and Add to Cart Button */}
-                <div className="mt-auto flex justify-between items-center">
+                <div className="mt-auto flex justify-between items-center border-t border-gray-200 pt-3">
                   <p className="text-gray-600 text-lg font-semibold">
                     ₹{product.price}
                   </p>
@@ -135,7 +134,6 @@ if (selectedCategory) {
         )}
       </div>
     </div>
-    
   );
 };
 

@@ -5,7 +5,8 @@ const {
   getProducts,
   getProductsByCategory,
   editProduct,
-  deleteProduct
+  deleteProduct,
+  searchProducts,
 } = require("../controllers/productController");
 const {
   createOrder,
@@ -23,6 +24,8 @@ const router = express.Router();
 router.post("/product",verifyToken, postProduct);
 router.put("/product/:id", verifyToken, editProduct); // Only admin can edit
 router.delete("/product/:id", verifyToken, deleteProduct); 
+router.get("/products/search", searchProducts);
+
 
 // Route to fetch all products (accessible to all users)
 router.get("/product", getProducts);
