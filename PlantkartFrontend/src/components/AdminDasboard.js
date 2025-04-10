@@ -1,401 +1,271 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from 'react';
+import { Link } from "react-router-dom"; // Import React Router
+import {
+  LineChart,
+  BarChart,
+  Users,
+  Package,
+  ShoppingCart,
+  Bell,
+  TrendingUp,
+  Star,
+  Truck,
+  Settings,
+  Search,
+} from 'lucide-react';
+import { Line, Bar, Pie } from 'react-chartjs-2'; // Import Pie Chart
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement, // Required for Pie Chart
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
-const API_URL = process.env.REACT_APP_API_URL;
-const AdminDashboard = () => {
-  const [products, setProducts] = useState([]);
-  const [orders, setOrders] = useState([]);
-  const [activeTab, setActiveTab] = useState("products");
-  const [newProduct, setNewProduct] = useState({
-    title: "",
-    image: "",
-    description: "",
-    price: "",
-    category: "Bonsai",
-    stock: "",
-  });
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement, // Register ArcElement for Pie Charts
+  Title,
+  Tooltip,
+  Legend
+);
 
-  const [editingProduct, setEditingProduct] = useState(null); // For storing the product being edited
 
-  useEffect(() => {
-    fetchProducts();
-    fetchOrders();
-  }, []);
+function Admin() {
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get(
-        `${API_URL}/api/auth/product`
-      );
-      setProducts(response.data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
+  // Dummy data for charts
+  const salesData = {
+    labels: [
+      "January", "February", "March"
+    
+    ],
+    datasets: [
+      {
+        data: [120, 150, 180 ], // Example sales data
+        backgroundColor: [
+          "#FF5733", // Jan - Red
+          "#33FF57", // Feb - Green
+          "#3357FF" // Mar - Blue
+        
+          
+        ],
+        borderColor: "#fff",
+        borderWidth: 2,
+        hoverOffset: 10, // Gives a 3D effect on hover
+      },
+    ],
   };
+  
 
-  const fetchOrders = async () => {
-    try {
-      const token = localStorage.getItem("token"); // Check if the token exists
-      if (!token) {
-        console.error("Token not found. Please log in again.");
-        return;
-      }
+ 
 
-      const response = await axios.get(`${API_URL}/api/auth/admin/orders`, {
-        headers: { Authorization: `Bearer ${token}` }, // Use the token
-      });
+  // Dummy orders data
+  const recentOrders = [
+    { id: 1, customer: 'John Doe', product: 'Monstera Deliciosa', status: 'Pending', amount: '$65' },
+    { id: 2, customer: 'Jane Smith', product: 'Snake Plant', status: 'Shipped', amount: '$45' },
+    { id: 3, customer: 'Mike Johnson', product: 'Peace Lily', status: 'Delivered', amount: '$35' },
+  ];
 
-      console.log("Orders:", response.data);
-      setOrders(response.data.orders);
-    } catch (error) {
-      console.error("Error fetching orders:", error.message);
-    }
+  const inventoryStatusData = {
+    labels: ['In Stock', 'Low Stock', 'Out of Stock'],
+    datasets: [
+      {
+        data: [20, 5, 2],  // Update these numbers based on actual inventory
+        backgroundColor: ['#4CAF50', '#FFC107', '#F44336'],
+        borderColor: "#fff",
+        borderWidth: 2,
+      },
+    ],
   };
+  
 
-  const addProduct = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post(`${API_URL}/api/auth/product`, newProduct, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      fetchProducts();
-      alert("Product added successfully");
-    } catch (error) {
-      console.error("Error adding product:", error);
-    }
-  };
-
-  const deleteProduct = async (id) => {
-    try {
-      await axios.delete(`${API_URL}/api/auth/product/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-      fetchProducts();
-    } catch (error) {
-      console.error("Error deleting product:", error);
-    }
-  };
-
-  const editProduct = (product) => {
-    setEditingProduct(product);
-    setActiveTab("editProduct");
-  };
-
-  const updateProduct = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.put(
-        `${API_URL}/api/auth/product/${editingProduct._id}`,
-        editingProduct,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
-      fetchProducts();
-      alert("Product updated successfully");
-      setEditingProduct(null);
-      setActiveTab("products");
-    } catch (error) {
-      console.error("Error updating product:", error);
-    }
-  };
+  
+// ✅ Define 'options' before usage
+const options = {
+  responsive: true,
+  animation: {
+    animateRotate: true,
+    animateScale: true,
+  },
+};
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-gray-100 pt-20">
+    <div className="min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <div className="w-full lg:w-64 bg-green-700 text-white p-5 lg:h-screen">
-        <h2 className="text-2xl font-bold">Admin Dashboard</h2>
-        <ul className="mt-5 space-y-2">
-          <li
-            onClick={() => setActiveTab("products")}
-            className="cursor-pointer py-2 hover:bg-green-600 rounded-md"
-          >
-            All Products
-          </li>
-          <li
-            onClick={() => setActiveTab("addProduct")}
-            className="cursor-pointer py-2 hover:bg-green-600 rounded-md"
-          >
-            Add Product
-          </li>
-          <li
-            onClick={() => setActiveTab("orders")}
-            className="cursor-pointer py-2 hover:bg-green-600 rounded-md"
-          >
-            Orders
-          </li>
-        </ul>
+      <div className="fixed w-64 h-full bg-gradient-to-b from-green-600 to-green-800 text-white p-6 mt-12">
+     
+        <nav className="space-y-4">
+          <a href="#" className="flex items-center space-x-3 p-2 bg-green-700 rounded-lg">
+            <LineChart size={20} />
+            <span>Dashboard</span>
+          </a>
+          <Link to="/add-product" className="flex items-center space-x-3 p-2 hover:bg-green-700 rounded-lg">
+  <Package size={20} />
+  <span>Add Products</span>
+</Link>
+          <a href="#" className="flex items-center space-x-3 p-2 hover:bg-green-700 rounded-lg">
+            <Users size={20} />
+            <span>Customers</span>
+          </a>
+          <a href="#" className="flex items-center space-x-3 p-2 hover:bg-green-700 rounded-lg">
+            <ShoppingCart size={20} />
+            <span>Orders</span>
+          </a>
+          <a href="#" className="flex items-center space-x-3 p-2 hover:bg-green-700 rounded-lg">
+            <Settings size={20} />
+            <span>Settings</span>
+          </a>
+        </nav>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-5 overflow-auto">
-        {activeTab === "products" && (
-          <div>
-            <h2 className="text-xl font-bold mb-4">All Products</h2>
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr>
-                  <th className="border p-2">Title</th>
-                  <th className="border p-2">Price</th>
-                  <th className="border p-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((product) => (
-                  <tr key={product._id}>
-                    <td className="border p-2">{product.title}</td>
-                    <td className="border p-2">₹{product.price}</td>
-                    <td className="border p-2 flex space-x-2">
-                      <button
-                        onClick={() => editProduct(product)}
-                        className="bg-yellow-500 text-white px-3 py-1"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => deleteProduct(product._id)}
-                        className="bg-red-500 text-white px-3 py-1"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <div className="ml-64 p-8">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center bg-white rounded-lg px-4 py-2 w-96 shadow-sm">
+            <Search size={20} className="text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search..."
+              className="ml-2 outline-none flex-1"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
-        )}
-
-        {activeTab === "addProduct" && (
-          <div>
-            <h2 className="text-xl font-bold mb-4">Add Product</h2>
-            <form onSubmit={addProduct} className="space-y-4">
-              <input
-                type="text"
-                placeholder="Title"
-                onChange={(e) =>
-                  setNewProduct({ ...newProduct, title: e.target.value })
-                }
-                className="w-full p-2 border border-gray-300"
-                required
-              />
-              <input
-                type="text"
-                placeholder="Image URL"
-                onChange={(e) =>
-                  setNewProduct({ ...newProduct, image: e.target.value })
-                }
-                className="w-full p-2 border border-gray-300"
-                required
-              />
-              <textarea
-                placeholder="Description"
-                onChange={(e) =>
-                  setNewProduct({ ...newProduct, description: e.target.value })
-                }
-                className="w-full p-2 border border-gray-300"
-                required
-              />
-              <input
-                type="number"
-                placeholder="Price"
-                onChange={(e) =>
-                  setNewProduct({ ...newProduct, price: e.target.value })
-                }
-                className="w-full p-2 border border-gray-300"
-                required
-              />
-              <select
-                onChange={(e) =>
-                  setNewProduct({ ...newProduct, category: e.target.value })
-                }
-                className="w-full p-2 border border-gray-300"
-                required
-              >
-                <option value="Bonsai">Bonsai</option>
-                <option value="Succulent">Succulent</option>
-                <option value="Cactus">Cactus</option>
-                <option value="Flowering">Flowering</option>
-                <option value="Indoor Plants">Indoor Plants</option>
-                <option value="Outdoor Plants">Outdoor Plants</option>
-                <option value="Planters">Planters</option>
-                <option value="Air Purifying Plants">
-                  Air Purifying Plants
-                </option>
-                <option value="Flowering Palnts">
-                  Flowering Plants
-                </option>
-              </select>
-
-              <button
-                type="submit"
-                className="bg-blue-500 text-white px-4 py-2"
-              >
-                Add Product
-              </button>
-            </form>
+          <div className="flex items-center space-x-4">
+            <button className="p-2 rounded-lg bg-white shadow-sm">
+              <Bell size={20} className="text-gray-600" />
+            </button>
           </div>
-        )}
+        </div>
 
-        {activeTab === "editProduct" && editingProduct && (
-          <div>
-            <h2 className="text-xl font-bold mb-4">Edit Product</h2>
-            <form onSubmit={updateProduct} className="space-y-4">
-              <input
-                type="text"
-                value={editingProduct.title}
-                onChange={(e) =>
-                  setEditingProduct({
-                    ...editingProduct,
-                    title: e.target.value,
-                  })
-                }
-                className="w-full p-2 border border-gray-300"
-                required
-              />
-              <input
-                type="text"
-                value={editingProduct.image}
-                onChange={(e) =>
-                  setEditingProduct({
-                    ...editingProduct,
-                    image: e.target.value,
-                  })
-                }
-                className="w-full p-2 border border-gray-300"
-                required
-              />
-              <textarea
-                value={editingProduct.description}
-                onChange={(e) =>
-                  setEditingProduct({
-                    ...editingProduct,
-                    description: e.target.value,
-                  })
-                }
-                className="w-full p-2 border border-gray-300"
-                required
-              />
-              <input
-                type="number"
-                value={editingProduct.price}
-                onChange={(e) =>
-                  setEditingProduct({
-                    ...editingProduct,
-                    price: e.target.value,
-                  })
-                }
-                className="w-full p-2 border border-gray-300"
-                required
-              />
-              <select
-                value={editingProduct.category}
-                onChange={(e) =>
-                  setEditingProduct({
-                    ...editingProduct,
-                    category: e.target.value,
-                  })
-                }
-                className="w-full p-2 border border-gray-300"
-                required
-              >
-                <option value="Bonsai">Bonsai</option>
-                <option value="Succulent">Succulent</option>
-                <option value="Cactus">Cactus</option>
-                <option value="Flowering">Flowering</option>
-                <option value="Indoor Plants">Indoor Plants</option>
-                <option value="Outdoor Plants">Outdoor Plants</option>
-                <option value="Planters">Planters</option>
-              </select>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-4 gap-6 mb-8">
+  {[
+    { title: "Total Revenue", value: "$24,500", icon: <TrendingUp size={24} /> },
+    { title: "Total Orders", value: "145", icon: <ShoppingCart size={24} /> },
+    { title: "Total Customers", value: "89", icon: <Users size={24} /> },
+    { title: "Inventory", value: "Total: 500", icon: <Package size={24} /> }
 
-              <button
-                type="submit"
-                className="bg-green-500 text-white px-4 py-2"
-              >
-                Update Product
-              </button>
-            </form>
-          </div>
-        )}
-
-        {activeTab === "orders" && (
-          <div className="p-6 bg-gray-100 rounded-md shadow-md">
-            <h2 className="text-2xl font-bold mb-6 text-center text-gray-700">
-              Order Management
-            </h2>
-            <table className="w-full border-collapse border border-gray-300 bg-white rounded-md shadow-sm">
-              <thead className="bg-gray-200">
-                <tr>
-                  <th className="border p-3 text-left text-gray-600 font-semibold">
-                    User
-                  </th>
-                  <th className="border p-3 text-left text-gray-600 font-semibold">
-                    Products
-                  </th>
-                  <th className="border p-3 text-center text-gray-600 font-semibold">
-                    Total Amount
-                  </th>
-                  <th className="border p-3 text-center text-gray-600 font-semibold">
-                    Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.length > 0 ? (
-                  orders.map((order) => (
-                    <tr
-                      key={order._id}
-                      className="hover:bg-gray-50 transition duration-150"
-                    >
-                      <td className="border p-3 text-gray-800">
-                        {order.userId.username}
-                      </td>
-                      <td className="border p-3 text-gray-800">
-                        {order.products.map((product, index) => (
-                          <div
-                            key={product.productId?._id || index}
-                            className="mb-1"
-                          >
-                            <span className="font-medium">
-                              {product.quantity}
-                            </span>{" "}
-                            x ₹
-                            <span className="font-medium">{product.price}</span>{" "}
-                            -{" "}
-                            <span className="italic text-gray-600">
-                              {product.productId?.title || "Unknown Product"}
-                            </span>
-                          </div>
-                        ))}
-                      </td>
-                      <td className="border p-3 text-center font-semibold text-gray-800">
-                        ₹{order.totalAmount}
-                      </td>
-                      <td
-                        className={`border p-3 text-center font-medium ${
-                          order.status === "Paid"
-                            ? "text-green-600 bg-green-100"
-                            : "text-red-600 bg-red-100"
-                        } rounded`}
-                      >
-                        {order.status}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" className="p-4 text-center text-gray-500">
-                      No orders to display.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
+  ].map((item, index) => (
+    <div 
+      key={index}
+      className="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:scale-105 hover:shadow-lg hover:bg-gradient-to-r hover:from-green-400 hover:to-green-600 hover:text-white"
+    >
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-gray-500 hover:text-white">{item.title}</p>
+          <h3 className="text-2xl font-bold">{item.value}</h3>
+        </div>
+        <div className="bg-gray-100 p-3 rounded-full transition-all duration-300 hover:bg-opacity-80 hover:bg-green-300">
+          {item.icon}
+        </div>
       </div>
     </div>
-  );
-};
+  ))}
+</div>
 
-export default AdminDashboard;
+
+    {/* Charts Section */}
+<div className="grid grid-cols-2 gap-6 mb-8">
+  {/* Sales Overview (Pie Chart) */}
+  <div className="bg-white p-6 rounded-lg shadow-md h-[400px] w-full flex flex-col justify-center items-center">
+    <h3 className="text-lg font-semibold mb-4 text-gray-700">Sales Overview</h3>
+    <div className="w-[80%] h-[80%]">
+      <Pie 
+        data={salesData} 
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 14 } } },
+          },
+          animation: { animateRotate: true, animateScale: true },
+        }} 
+      />
+    </div>
+  </div>
+
+  {/* Inventory Status (Pie Chart) */}
+  <div className="bg-white p-6 rounded-lg shadow-md h-[400px] w-full flex flex-col justify-center items-center">
+    <h3 className="text-lg font-semibold mb-4 text-gray-700">Inventory Status</h3>
+    <div className="w-[80%] h-[80%]">
+      <Pie 
+        data={inventoryStatusData} 
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 14 } } },
+          },
+          animation: { animateRotate: true, animateScale: true },
+        }} 
+      />
+    </div>
+  </div>
+</div>
+
+
+
+       {/* Recent Orders */}
+<div className="bg-white p-6 rounded-lg shadow-md mb-8">
+  <h3 className="text-lg font-semibold mb-4 text-gray-700">Recent Orders</h3>
+  <div className="overflow-x-auto">
+    <table className="w-full border-collapse">
+      <thead>
+        <tr className="text-left bg-green-100 text-gray-700 uppercase text-sm">
+          <th className="p-3 font-semibold">Order ID</th>
+          <th className="p-3 font-semibold">Customer</th>
+          <th className="p-3 font-semibold">Product</th>
+          <th className="p-3 font-semibold">Status</th>
+          <th className="p-3 font-semibold">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {recentOrders.map((order, index) => (
+          <tr 
+            key={order.id} 
+            className={`border-t transition-all duration-200 hover:bg-green-50 ${
+              index % 2 === 0 ? "bg-gray-50" : "bg-white"
+            }`}
+          >
+            <td className="p-3 text-gray-700 font-medium">#{order.id}</td>
+            <td className="p-3 text-gray-600">{order.customer}</td>
+            <td className="p-3 text-gray-600">{order.product}</td>
+            <td className="p-3">
+              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                order.status === 'Pending' ? 'bg-yellow-200 text-yellow-800' :
+                order.status === 'Shipped' ? 'bg-blue-200 text-blue-800' :
+                'bg-green-200 text-green-800'
+              }`}>
+                {order.status}
+              </span>
+            </td>
+            <td className="p-3 text-gray-700 font-semibold">{order.amount}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+</div>
+</div>
+
+  );
+}
+
+export default Admin;

@@ -55,6 +55,7 @@ const HeroSection = () => {
               alt={category.name}
               className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover rounded-full"
             />
+            
             {/* Category Name */}
             <p className="mt-2 text-xs sm:text-sm md:text-base font-semibold text-gray-700">
               {category.name}
