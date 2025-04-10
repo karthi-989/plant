@@ -14,6 +14,9 @@ import CelebsYouLove from "./components/CelebsYouLove";
 import Cart from "./components/cart";
 import Checkout from "./components/checkOut";
 import AdminDashboard from "./components/AdminDasboard";
+import AddProduct from "./components/pages/Addproduct";
+
+
 
 function App() {
   return (
@@ -35,6 +38,8 @@ function App() {
         />
         <Route path="/" element={<Signup />} />
         <Route path="/login" element={<SignIn />} />
+        <Route path="/add-product" element={<AddProduct />} />
+        
         <Route
           path="/plants"
           element={
