@@ -15,17 +15,17 @@ const verifyToken = async (req, res, next) => {
     }
 
     try {
-      // Verify the token
+      
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Fetch the user from the database using the decoded token's id
+      
       const user = await User.findById(decoded.id).select("name username role");
 
       if (!user) {
         return res.status(404).json({ message: "User not found." });
       }
 
-      // Attach user data to req.user
+      
       req.user = {
         id: user._id,
         name: user.name,
@@ -34,7 +34,7 @@ const verifyToken = async (req, res, next) => {
       };
 
       console.log("Authenticated user:", req.user);
-      next(); // Proceed to the next middleware or route handler
+      next(); 
     } catch (err) {
       console.error("Token validation error:", err);
       return res.status(400).json({ message: "Token is not valid." });

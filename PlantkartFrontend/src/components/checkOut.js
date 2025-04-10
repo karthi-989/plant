@@ -90,17 +90,17 @@ const Checkout = () => {
 
       const { orderId, key } = orderResponse.data;
 
-      // Step 2: Open Razorpay modal
+      
       const options = {
-        key: "rzp_test_PGrSvKSsu8PlqK", // Razorpay API key (Ensure it's stored securely)
-        amount: totalPrice * 100, // Amount in paisa (Razorpay expects amount in the smallest currency unit)
+        key: "rzp_test_PGrSvKSsu8PlqK", 
+        amount: totalPrice * 100, 
         currency: "INR",
         name: "Plant Store",
         description: "Order Payment",
         order_id: orderId,
         handler: function (response) {
           console.log("Payment Successful", response);
-          // Send payment details to backend
+        
           axios
             .post(
               `${API_URL}/api/auth/verify-payment`,
@@ -112,7 +112,7 @@ const Checkout = () => {
               {
                 headers: {
                   "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`, // ✅ Add Token
+                  Authorization: `Bearer ${token}`, 
                 },
               }
             )
@@ -137,7 +137,7 @@ const Checkout = () => {
         theme: { color: "#3399cc" },
       };
 
-      // 🔹 Ensure Razorpay object is available
+     
       const razorpay = new window.Razorpay(options);
       razorpay.open();
     } catch (err) {

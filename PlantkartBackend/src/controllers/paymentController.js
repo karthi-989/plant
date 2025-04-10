@@ -9,7 +9,7 @@ const razorpay = new Razorpay({
   key_secret: process.env.KEY_SECRET,
 });
 
-// Create a Razorpay Order
+
 exports.createOrder = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -58,15 +58,15 @@ exports.verifyPayment = async (req, res) => {
     .update(body)
     .digest("hex");
 
-    console.log("🟢 Expected Signature:", expectedSignature);
-    console.log("🔴 Received Signature:", razorpay_signature);
+    console.log(" Expected Signature:", expectedSignature);
+    console.log(" Received Signature:", razorpay_signature);
 
 
     if (expectedSignature !== razorpay_signature) {
       return res.status(400).json({ error: "Invalid payment signature" });
     }
 
-    // Fetch cart items for order details
+   
     const userId = req.user.id;
     const cart = await Cart.findOne({ user: userId }).populate(
       "products.productId"
@@ -76,7 +76,7 @@ exports.verifyPayment = async (req, res) => {
       return res.status(400).json({ error: "Cart is empty" });
     }
 
-    // Create Order in Database
+
     const order = new Order({
       userId,
       products: cart.products.map((item) => ({
@@ -95,8 +95,8 @@ exports.verifyPayment = async (req, res) => {
 
     await order.save();
 
-    // Clear the cart after successful payment
-    cart.products = []; // FIXED: Properly clearing the cart
+
+    cart.products = []; 
     await cart.save();
 
     res.json({
@@ -111,27 +111,27 @@ exports.verifyPayment = async (req, res) => {
 };
 exports.getAllOrders = async (req, res) => {
   try {
-    // Verify admin access
+    
     if (!req.user || req.user.role !== "admin") {
       return res.status(403).json({ error: "Access denied. Admins only." });
     }
 
-    // Extract query parameters for filtering and pagination
+    
     const { status, page = 1, limit = 10 } = req.query;
-    const filter = status ? { status } : {}; // Apply status filter if provided
+    const filter = status ? { status } : {}; 
 
-    // Fetch orders with user and product details, sorted by newest first
+    
     const orders = await Order.find(filter)
-      .populate("userId", "username email") // Populate user details
-      .populate("products.productId", "title price") // Populate product details
-      .sort({ createdAt: -1 }) // Sort by creation date
-      .skip((page - 1) * Number(limit)) // Pagination: skip records
-      .limit(Number(limit)); // Pagination: limit number of records
+      .populate("userId", "username email") 
+      .populate("products.productId", "title price") 
+      .sort({ createdAt: -1 }) 
+      .skip((page - 1) * Number(limit)) 
+      .limit(Number(limit)); 
 
-    // Get total order count (for pagination)
+    
     const totalOrders = await Order.countDocuments(filter);
 
-    // Send the response with pagination metadata
+    
     res.status(200).json({
       success: true,
       orders,
@@ -140,7 +140,7 @@ exports.getAllOrders = async (req, res) => {
       currentPage: Number(page),
     });
   } catch (error) {
-    // Enhanced error handling
+    
     console.error("Error fetching orders:", {
       message: error.message,
       stack: error.stack,

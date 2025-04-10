@@ -4,7 +4,7 @@ const verifyToken = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
-// Add to cart route (requires authentication)
+
 
 router.post("/add", verifyToken, addToCart);
 router.get("/get",verifyToken, getCart)

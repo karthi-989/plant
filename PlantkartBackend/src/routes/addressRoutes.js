@@ -7,7 +7,7 @@ const {
 
 const router = express.Router();
 
-// Routes with authentication
+
 router.post("/add", verifyToken, addAddress);
 router.get("/get", verifyToken, getAllAddresses);
 

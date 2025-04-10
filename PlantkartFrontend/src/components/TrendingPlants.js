@@ -73,7 +73,7 @@ const TrendingPlants = () => {
               key={plant._id}
               className="bg-white border border-gray-300 rounded-lg shadow-md p-4 flex flex-col h-[320px] sm:h-[280px] md:h-[300px] w-full"
             >
-              {/* Product Image */}
+              
               <Link to={`/product/${plant._id}`}>
                 <img
                   src={plant.image}
@@ -82,12 +82,12 @@ const TrendingPlants = () => {
                 />
               </Link>
 
-              {/* Product Title */}
+            
               <h6 className="text-lg font-semibold text-center text-gray-800">
                 {plant.title}
               </h6>
 
-              {/* Price and Add to Cart Button */}
+              
               <div className="mt-auto flex justify-between items-center">
                 <p className="text-gray-600 text-lg font-medium">
                   ₹{plant.price}

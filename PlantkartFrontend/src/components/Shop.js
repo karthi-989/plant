@@ -29,7 +29,7 @@ const addToCart = async (productId) => {
       }
     );
 
-    alert("Product added to cart!");
+    window.alert("Product added to cart!");
   } catch (error) {
     console.error(
       "Error adding product to cart:",
@@ -97,7 +97,7 @@ const Shop = () => {
                 key={product._id}
                 className="bg-white border border-gray-300 rounded-lg shadow-md p-4 flex flex-col justify-between h-[320px] w-full sm:w-[200px] md:w-[240px]"
               >
-                {/* Product Image */}
+                
                 <div className="h-[150px] flex items-center justify-center">
                   <img
                     src={product.image}
@@ -106,12 +106,11 @@ const Shop = () => {
                   />
                 </div>
 
-                {/* Product Title */}
+             
                 <h6 className="text-lg font-bold text-center mt-2">
                   {product.title}
                 </h6>
 
-                {/* Price and Add to Cart Button */}
                 <div className="mt-auto flex justify-between items-center border-t border-gray-200 pt-3">
                   <p className="text-gray-600 text-lg font-semibold">
                     ₹{product.price}

@@ -6,24 +6,24 @@ console.log("API URL from env:", process.env.REACT_APP_API_URL);
 console.log("Final API Request URL:", `${API_URL}/api/auth/login`);
 
 export default function SignIn() {
-  const [loginType, setLoginType] = useState("email"); // Default is email
-  const [username, setUsername] = useState(""); // For email or phone (depending on loginType)
-  const [phoneNumber, setPhoneNumber] = useState(""); // Specifically for phone number
+  const [loginType, setLoginType] = useState("email"); 
+  const [username, setUsername] = useState(""); 
+  const [phoneNumber, setPhoneNumber] = useState(""); 
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
 
-  // Handle username (email or phone) change
+
   const handleUsernameChange = (e) => {
     if (loginType === "email") {
-      setUsername(e.target.value); // If loginType is email, update username state
+      setUsername(e.target.value); 
     } else {
-      setPhoneNumber(e.target.value); // If loginType is phone, update phoneNumber state
+      setPhoneNumber(e.target.value); 
     }
   };
 
-  // Handle password change
+  
   const handlePasswordChange = (e) => setPassword(e.target.value);
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -52,9 +52,9 @@ const handleSubmit = async (e) => {
         console.error("Token missing in response!");
       }
 
-      // ✅ Redirect based on user role
+      
       if (data.role === "admin") {
-        navigate("/admin"); // Redirect to admin dashboard
+        navigate("/admin");
       } else {
         navigate("/home", { state: { username } });
       }
@@ -166,7 +166,7 @@ const handleSubmit = async (e) => {
               </button>
             </p>
 
-            {/* Toggle Login Type */}
+            
             <div className="mt-4 text-center">
               <button
                 onClick={() =>

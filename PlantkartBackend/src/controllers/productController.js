@@ -3,14 +3,13 @@ const Product = require("../models/product");
 
 const postProduct = async (req, res) => {
   try {
-    // Ensure user is authenticated and has admin role
+    
     if (!req.user || req.user.role !== "admin") {
       return res.status(403).json({ message: "Access denied. Admins only." });
     }
 
     const { title, description, price, category, image, stock } = req.body;
 
-    // Validate input
     if (
       !title ||
       !description ||
@@ -22,14 +21,13 @@ const postProduct = async (req, res) => {
       return res.status(400).json({ message: "All fields are required." });
     }
 
-    // Ensure price and stock are valid numbers
+    
     if (isNaN(price) || isNaN(stock) || price < 0 || stock < 0) {
       return res
         .status(400)
         .json({ message: "Price and stock must be non-negative numbers." });
     }
 
-    // Create a new product
     const product = new Product({
       title,
       description,
@@ -39,18 +37,18 @@ const postProduct = async (req, res) => {
       stock,
     });
 
-    // Save the product
+    
     await product.save();
 
-    // Send response
+    
     res.status(201).json({
       message: "Product successfully created.",
-      productId: product._id, // ✅ Returns only the product ID
+      productId: product._id, 
     });
   } catch (err) {
     console.error("Error posting product:", err);
 
-    // Handle Mongoose validation errors
+  
     if (err.name === "ValidationError") {
       return res
         .status(400)
@@ -133,19 +131,19 @@ const editProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   try {
-    // Ensure user is authenticated and is an admin
+  
     if (!req.user || req.user.role !== "admin") {
       return res.status(403).json({ message: "Access denied. Admins only." });
     }
 
     const { id } = req.params;
 
-    // Validate ID format (check if it's a valid MongoDB ObjectId)
+   
     if (!id.match(/^[0-9a-fA-F]{24}$/)) {
       return res.status(400).json({ message: "Invalid product ID format." });
     }
 
-    // Find and delete the product
+    
     const deletedProduct = await Product.findByIdAndDelete(id);
 
     if (!deletedProduct) {
@@ -172,8 +170,8 @@ const searchProducts = async (req, res) => {
 
     const products = await Product.find({
       $or: [
-        { title: { $regex: new RegExp(query, "i") } }, // Case-insensitive search in title
-        { description: { $regex: new RegExp(query, "i") } }, // Case-insensitive search in description
+        { title: { $regex: new RegExp(query, "i") } }, 
+        { description: { $regex: new RegExp(query, "i") } }, 
       ],
     });
 
@@ -196,6 +194,6 @@ module.exports = {
   getProductsByCategory,
   editProduct,
   deleteProduct,
-  searchProducts, // ✅ Added the new function
+  searchProducts, 
 };
 

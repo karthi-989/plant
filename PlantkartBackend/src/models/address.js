@@ -1,4 +1,4 @@
-// Import required modules
+
 const mongoose = require("mongoose");
 
 // Address Schema
@@ -22,7 +22,7 @@ const addressSchema = new mongoose.Schema(
     },
     landmark: {
       type: String,
-      required: false, // Optional field
+      required: false, 
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
