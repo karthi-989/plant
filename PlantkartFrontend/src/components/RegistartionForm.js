@@ -13,14 +13,13 @@ export default function Signup() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // Handlers for input changes
   const handleUsernameChange = (e) => setUsername(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
   const handleNameChange = (e) => setName(e.target.value);
   const handleconfirmPasswordChange = (e) => setconfirmPassword(e.target.value);
   const handlephoneNumberChange=(e)=> setphoneNumber(e.target.value)
 
-  // Form validation
+
   const validateForm = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex =
@@ -43,16 +42,13 @@ export default function Signup() {
       return false;
     }
 
-    // if (!["admin", "viewer"].includes(role)) {
-    //   setError("Role must be one of: admin, manager, user.");
-    //   return false;
-    // }
 
-    setError(""); // Clear any previous errors
+
+    setError(""); 
     return true;
   };
 
-  // Handle form submission
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -74,7 +70,7 @@ export default function Signup() {
       if (response.ok) {
         alert("Signup successful!");
         localStorage.setItem("name", name);
-        navigate("/login"); // Redirect to login
+        navigate("/login"); 
       } else {
         setError(data.message || "Signup failed. Please try again.");
       }
@@ -87,12 +83,12 @@ export default function Signup() {
   return (
     <div className="relative min-h-screen bg-[url('https://images.unsplash.com/photo-1466781783364-36c955e42a7f?q=80&w=2942&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center flex items-center justify-center px-4">
       <div className="flex flex-col lg:flex-row w-full max-w-7xl gap-x-10">
-        {/* Left Section (Image) */}
+       
         <div className="hidden lg:block w-1/2">
 
         </div>
 
-        {/* Right Section (Form) */}
+    
         <div className="w-full sm:w-3/4 lg:w-1/2 sm:max-w-sm mt-20 sm:mt-24 lg:mt-28  sm:ml-10 lg:ml-20 translate-y-2">
           <h2 className="text-center text-2xl font-bold tracking-tight text-gray-900">
             Sign up for an account

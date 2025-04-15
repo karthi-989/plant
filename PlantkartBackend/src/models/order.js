@@ -12,41 +12,34 @@ const orderSchema = new mongoose.Schema(
         productId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
-          required: true,
         },
-        quantity: {
-          type: Number,
-          required: true,
-        },
-        price: {
-          type: Number,
-          required: true,
-        },
+        quantity: Number,
+        price: Number,
       },
     ],
     totalAmount: {
       type: Number,
       required: true,
     },
-    paymentId: {
+    paymentId: String,
+    orderId: String,
+    orderStatus: {
       type: String,
-      required: true,
+      enum: ["Processing", "Shipped", "Delivered", "Cancelled"],
+      default: "Processing",
     },
-    orderId: {
-      type: String,
-      required: true,
-    },
-    status: {
-      type: String,
-      enum: ["Pending", "Paid", "Failed"],
-      default: "Pending",
-    },
+    // ✅ Add this address field
     address: {
-      fullName: String,
+      firstName: String,
+      lastName: String,
       phoneNumber: String,
-      addressLine: String,
+      address: String,
+      city: String,
+      state: String,
+      country: String,
       pincode: String,
       landmark: String,
+      email: String,
     },
   },
   { timestamps: true }

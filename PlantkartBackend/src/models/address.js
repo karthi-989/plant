@@ -1,18 +1,34 @@
-// Import required modules
 const mongoose = require("mongoose");
 
 // Address Schema
 const addressSchema = new mongoose.Schema(
   {
-    name: {
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
       type: String,
       required: true,
     },
     phoneNumber: {
       type: String,
       required: true,
+      match: [/^\d{10}$/, "Please enter a valid 10-digit phone number"], // Basic phone number validation
     },
     address: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    state: {
+      type: String,
+      required: true,
+    },
+    country: {
       type: String,
       required: true,
     },
@@ -22,7 +38,12 @@ const addressSchema = new mongoose.Schema(
     },
     landmark: {
       type: String,
-      required: false, // Optional field
+      default: "", // Default to empty string if no landmark is provided
+    },
+    email: {
+      type: String,
+      required: true,
+      match: [/\S+@\S+\.\S+/, "Please enter a valid email address"], // Basic email validation
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,

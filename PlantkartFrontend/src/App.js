@@ -14,6 +14,12 @@ import CelebsYouLove from "./components/CelebsYouLove";
 import Cart from "./components/cart";
 import Checkout from "./components/checkOut";
 import AdminDashboard from "./components/AdminDasboard";
+import AddProduct from "./pages/addProduct";
+import Sidebar from "./pages/sideBar";
+import ProductManager from "./pages/viewProducts";
+import OrderDetails from "./pages/orderdetails";
+import AdminLayout from "./pages/adminLayout";
+import AdminOrderStats from "./pages/dashboardHome";
 
 function App() {
   return (
@@ -83,14 +89,13 @@ function App() {
             </Layout>
           }
         />
-        <Route
-          path="/admin"
-          element={
-            <Layout>
-              <AdminDashboard />
-            </Layout>
-          }
-        />
+        <Route path="/admin" element={<AdminOrderStats/>} />
+        <Route path="/addproduct" element={<AddProduct />} />
+        <Route path="/dash" element={<Sidebar />} />
+        <Route path="/viewproduct" element={<ProductManager />} />
+        <Route path="/orders" element={<OrderDetails />} />
+        <Route path="/orders" element={<OrderDetails />} />
+        <Route path="/stats" element={<AdminOrderStats />} />
       </Routes>
     </Router>
   );

@@ -3,7 +3,7 @@ import React from "react";
 const LandscapeGardening = () => {
   return (
     <div className="mt-12 md:mt-18 flex flex-col md:flex-row items-center justify-between p-5 bg-[#eefbf0] rounded-xl shadow-lg gap-5 max-w-5xl mx-auto transition-transform duration-200 hover:shadow-xl hover:-translate-y-1">
-      {/* Text Content */}
+      
       <div className="flex-1 max-w-lg text-center md:text-left">
         <h2 className="text-2xl md:text-3xl font-bold text-[#2b5329] mb-2">
           Landscape Gardening
@@ -21,7 +21,7 @@ const LandscapeGardening = () => {
         </button>
       </div>
 
-      {/* Image Content */}
+      
       <div className="flex-1 flex justify-center">
         <img
           src="https://www.saveur.com/uploads/2023/05/00-LEAD-4-Homeacres-no-dig-garden-10th-September-2022-by-Charles-D-scaled.jpg?auto=webp&auto=webp&optimize=high&quality=70&width=1440"

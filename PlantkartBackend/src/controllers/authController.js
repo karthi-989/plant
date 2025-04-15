@@ -6,19 +6,17 @@ const register = async (req, res) => {
   try {
     const { username, password, confirmPassword, name, phoneNumber } = req.body;
 
-    // Validate inputs
     if (!username || !password || !confirmPassword || !name || !phoneNumber) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Check if passwords match
+    
     if (password !== confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    // Check if it's an admin user (using predefined username and phone number)
     if (username === "karthikmutyala999@gmail.com" && phoneNumber === "9553955273") {
-      // Admin user has predefined username and phone number
+     
       const existingAdmin = await User.findOne({
         $or: [{ username }, { phoneNumber }],
       });
@@ -35,7 +33,7 @@ const register = async (req, res) => {
         password: hashedPassword,
         name,
         phoneNumber,
-        role: "admin", // Admin role is assigned automatically
+        role: "admin", 
       });
 
       await newAdmin.save();
@@ -43,7 +41,7 @@ const register = async (req, res) => {
         .status(201)
         .json({ message: `Admin registered successfully: ${username}` });
     } else {
-      // For non-admin users, check if username or phone number already exists
+      
       const existingUser = await User.findOne({
         $or: [{ username }, { phoneNumber }],
       });
@@ -55,14 +53,14 @@ const register = async (req, res) => {
         });
       }
 
-      // Hash password and create a new user
+      
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = new User({
         username,
         password: hashedPassword,
         name,
         phoneNumber,
-        role: "viewer", // Default role for users
+        role: "viewer", 
       });
 
       await newUser.save();
@@ -83,7 +81,7 @@ const login = async (req, res) => {
   try {
     const { username, password, phoneNumber } = req.body;
 
-    // Find the user by username or phone number
+   
     const user = await User.findOne({
       $or: [{ username }, { phoneNumber }],
     });
@@ -93,16 +91,14 @@ const login = async (req, res) => {
       });
     }
 
-    // Check if the provided password matches the stored hashed password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Log the username for debugging
+    
     console.log("Logged in user:", username);
 
-    // Generate a token after successful authentication
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Reference Address schema in User schema
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -24,8 +25,9 @@ const userSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
       required: true,
-      unique: true, // This ensures phone number is unique
+      unique: true,
     },
+    
   },
   {
     timestamps: true,

@@ -26,8 +26,8 @@ app.use(cors());
 
 //Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/address",addressRoutes)
+app.use("/api/user", userRoutes);
+app.use("/api/addresses", addressRoutes);
 app.use("/api/cart",cartRoutes)
 
 

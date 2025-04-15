@@ -148,14 +148,14 @@ const Cart = () => {
               key={item._id}
               className="flex flex-row items-center bg-white shadow-md p-4 mb-4 rounded-lg w-full"
             >
-              {/* Product Image */}
+             
               <img
                 src={item.productId?.image || "https://via.placeholder.com/80"}
                 alt={item.productId?.title || "Product Image"}
                 className="w-20 h-20 object-cover rounded"
               />
 
-              {/* Product Details */}
+              
               <div className="flex-1 ml-4">
                 <h3 className="font-semibold text-lg">
                   {item.productId?.title || "Unknown Product"}
@@ -163,11 +163,11 @@ const Cart = () => {
                 <p className="text-gray-500">₹{item.productId?.price || 0}</p>
               </div>
 
-              {/* Quantity Controls */}
+           
               <div className="flex flex-row items-center space-x-3">
                 <span className="text-gray-600">Qty: {item.quantity || 0}</span>
 
-                {/* Increase Quantity Button */}
+           
                 <button
                   className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg transition"
                   onClick={() => handleIncreaseQuantity(item.productId?._id)}
@@ -175,7 +175,7 @@ const Cart = () => {
                   +
                 </button>
 
-                {/* Decrease Quantity Button */}
+                
                 <button
                   className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded-lg transition"
                   onClick={() => handleDecreaseQuantity(item.productId?._id)}
@@ -183,7 +183,7 @@ const Cart = () => {
                   -
                 </button>
 
-                {/* Remove Button */}
+               
                 <button
                   className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg transition"
                   onClick={() => handleRemoveFromCart(item.productId?._id)}

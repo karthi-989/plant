@@ -4,9 +4,9 @@ import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 const Footer = () => {
   return (
     <footer className="bg-green-900 text-gray-300 py-6 position-fixed">
-      {/* Top Section */}
+     
       <div className="container mx-auto px-6 lg:px-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Logo Section */}
+       
         <div className="flex flex-col items-center lg:items-start">
           <img
             src="https://pbs.twimg.com/profile_images/811635929374806016/KGnTw0BJ_400x400.jpg"
@@ -15,7 +15,7 @@ const Footer = () => {
           />
         </div>
 
-        {/* Quick Links */}
+      
         <div className="hidden md:block">
           <h4 className="text-white font-semibold text-md mb-3">Quick Links</h4>
           <ul className="space-y-1 text-sm">
@@ -28,7 +28,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Legal */}
+       
         <div className="hidden md:block">
           <h4 className="text-white font-semibold text-md mb-3">Legal</h4>
           <ul className="space-y-1 text-sm">
@@ -43,7 +43,7 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Support */}
+       
         <div className="hidden md:block">
           <h4 className="text-white font-semibold text-md mb-3">Support</h4>
           <ul className="space-y-1 text-sm">
@@ -53,7 +53,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Social Icons & Copyright */}
+    
       <div className="border-t border-gray-700 mt-4 pt-3 flex flex-col items-center space-y-3">
         <p className="text-xs">© 2024 Plan A Plant | All Rights Reserved</p>
         <div className="flex space-x-4">
@@ -63,7 +63,7 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* Payment Methods */}
+     
       <div className="mt-4 flex flex-col items-center">
         <p className="text-gray-400 text-xs mb-2">Secure Payments</p>
         <div className="flex space-x-3">

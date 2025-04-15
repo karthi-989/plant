@@ -74,7 +74,7 @@ const Header = () => {
         </ul>
 
         <div className="flex items-center space-x-4 relative">
-          {/* Search Bar */}
+         
           <div className="relative">
             <input
               type="text"
@@ -83,7 +83,7 @@ const Header = () => {
               placeholder="Search products..."
               className="hidden md:block px-3 py-1 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400"
             />
-            {/* Search Results Dropdown */}
+           
             {searchResults.length > 0 && (
               <div className="absolute bg-white shadow-md rounded-md mt-2 w-full max-w-xs p-2 z-50">
                 {searchResults.map((product) => (
@@ -104,19 +104,18 @@ const Header = () => {
             )}
           </div>
 
-          {/* Cart Icon */}
+          
           <ShoppingCart
             className="text-gray-600 hover:text-green-600 transition cursor-pointer"
             onClick={() => navigate("/cart")}
           />
 
-          {/* User Icon */}
+         
           <User
             className="text-gray-600 hover:text-green-600 transition cursor-pointer"
             onClick={() => navigate("/login")}
           />
 
-          {/* Mobile Menu Button */}
           <button
             className="md:hidden text-gray-700 focus:outline-none"
             onClick={() => setMenuOpen(!menuOpen)}

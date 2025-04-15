@@ -22,24 +22,24 @@ exports.addToCart = async (req, res) => {
       return res.status(400).json({ message: "Product ID is required." });
     }
 
-    // Validate the product exists
+    
     const product = await Product.findById(productId.trim());
     if (!product) {
       return res.status(404).json({ message: "Product not found." });
     }
 
-    // Find or create a cart for the user
+   
     const cart = await findOrCreateCart(userId);
 
-    // Check if the product is already in the cart
+   
     const existingProduct = cart.products.find(
       (item) => item.productId.toString() === productId
     );
 
     if (existingProduct) {
-      existingProduct.quantity += quantity; // Update quantity
+      existingProduct.quantity += quantity; 
     } else {
-      cart.products.push({ productId, quantity }); // Add new product
+      cart.products.push({ productId, quantity }); 
     }
 
     await cart.save();
@@ -86,14 +86,13 @@ exports.getCart = async (req, res) => {
 // Remove Product from Cart
 exports.removeFromCart = async (req, res) => {
   try {
-    const userId = req.user.id; // User authenticated via token
-    const { productId } = req.params; // Extract productId from route params
+    const userId = req.user.id;
+    const { productId } = req.params; 
 
     if (!productId) {
       return res.status(400).json({ message: "Product ID is required." });
     }
 
-    // Find the cart for the user
     const cart = await Cart.findOne({ user: userId });
 
     if (!cart) {
@@ -102,14 +101,13 @@ exports.removeFromCart = async (req, res) => {
 
     console.log("Cart before removal:", cart.products);
 
-    // Remove the product from the cart
+    
     cart.products = cart.products.filter(
       (item) => item.productId.toString() !== productId
     );
 
     console.log("Cart after removal:", cart.products);
 
-    // Save the updated cart
     await cart.save();
 
     res.status(200).json({ message: "Product removed from cart.", cart });
@@ -136,7 +134,7 @@ exports.increaseQuantity = async (req, res) => {
       return res.status(400).json({ message: "Product ID is required." });
     }
 
-    // Update product quantity in the cart
+    
     const updatedCart = await Cart.findOneAndUpdate(
       { user: userId, "products.productId": productId },
       { $inc: { "products.$.quantity": 1 } },
@@ -158,7 +156,6 @@ exports.increaseQuantity = async (req, res) => {
   }
 };
 
-// Decrease Product Quantity
 exports.decreaseQuantity = async (req, res) => {
   try {
     const { productId } = req.body;
@@ -168,7 +165,7 @@ exports.decreaseQuantity = async (req, res) => {
       return res.status(400).json({ message: "Product ID is required." });
     }
 
-    // Decrease product quantity in the cart
+    
     const updatedCart = await Cart.findOneAndUpdate(
       { user: userId, "products.productId": productId },
       { $inc: { "products.$.quantity": -1 } },
@@ -179,7 +176,7 @@ exports.decreaseQuantity = async (req, res) => {
       return res.status(404).json({ message: "Cart item not found." });
     }
 
-    // Remove the product if quantity becomes 0
+    
     updatedCart.products = updatedCart.products.filter(
       (item) => item.quantity > 0
     );

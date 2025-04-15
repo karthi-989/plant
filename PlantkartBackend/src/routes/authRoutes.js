@@ -7,6 +7,7 @@ const {
   editProduct,
   deleteProduct,
   searchProducts,
+  bulkUploadProducts,
 } = require("../controllers/productController");
 const {
   createOrder,
@@ -15,6 +16,7 @@ const {
 } = require("../controllers/paymentController");
 
 const verifyToken=require("../middlewares/authMiddleware")
+const { getOrderStats } = require("../controllers/adminController");
 
 
 
@@ -30,6 +32,7 @@ router.get("/products/search", searchProducts);
 // Route to fetch all products (accessible to all users)
 router.get("/product", getProducts);
 router.get("/product/category/:category", getProductsByCategory);
+router.post("/admin/bulk-upload", verifyToken,bulkUploadProducts)
 
 router.post("/create-order", verifyToken, createOrder);
 router.post("/verify-payment", verifyToken, verifyPayment);
@@ -41,5 +44,8 @@ module.exports = router;
 // Authentication Routes
 router.post("/register", register);
 router.post("/login", login);
+//admin stats
+router.get("/order-stats", verifyToken, verifyToken, getOrderStats);
+
 
 module.exports = router;
